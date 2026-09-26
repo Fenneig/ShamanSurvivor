@@ -46,6 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: ShamanSurvivor.Runtime::ShamanSurvivor.Code.Runtime.Player.PlayerAuthoring
   _moveSpeed: 5
+  _hitRadius: 0.4
+  _maxHealth: 100
 --- !u!114 &4340808699521982831
 MonoBehaviour:
   m_ObjectHideFlags: 0
