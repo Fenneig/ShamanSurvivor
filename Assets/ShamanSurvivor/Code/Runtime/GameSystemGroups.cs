@@ -35,4 +35,11 @@ namespace ShamanSurvivor.Code.Runtime
     public partial class GameCombatSystemGroup : ComponentSystemGroup
     {
     }
+    
+    [UpdateInGroup(typeof(GameSimulationSystemGroup))]
+    [UpdateAfter(typeof(GameMovementSystemGroup))]
+    [UpdateBefore(typeof(GameCombatSystemGroup))]
+    public partial class GameAbilitySystemGroup : ComponentSystemGroup
+    {
+    }
 }

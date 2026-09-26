@@ -36,6 +36,7 @@ namespace ShamanSurvivor.Code.Runtime
 
             var ecb = new EntityCommandBuffer(Allocator.Temp);
 
+
             foreach (var enemySpawner in SystemAPI.Query<RefRW<EnemySpawner>>())
             {
                 ref EnemySpawner spawner = ref enemySpawner.ValueRW;
@@ -63,6 +64,8 @@ namespace ShamanSurvivor.Code.Runtime
 
                 var random = new Random(seed);
 
+                LocalTransform spawnTransform = SystemAPI.GetComponent<LocalTransform>(spawner.Prefab);
+                
                 for (int i = 0; i < spawnCount; i++)
                 {
                     float angle = random.NextFloat(0f, Mathf.PI * 2f);
@@ -73,8 +76,10 @@ namespace ShamanSurvivor.Code.Runtime
                     float2 spawnPosition = playerPosition.xy + direction * distance;
                     
                     Entity enemy = ecb.Instantiate(spawner.Prefab);
-                    
-                    ecb.SetComponent(enemy, LocalTransform.FromPosition(new float3(spawnPosition.x, spawnPosition.y, 0f)));
+
+                    spawnTransform.Position = new float3(spawnPosition.x, spawnPosition.y, 0f);
+
+                    enemy.Set(ecb, spawnTransform);
                 }
 
                 spawner.RandomState = random.state;
