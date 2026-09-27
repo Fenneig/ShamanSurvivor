@@ -17,4 +17,11 @@ namespace ShamanSurvivor.Code.Runtime
         public float Interval;
         public float CooldownRemaining;
     }
+
+    public struct EnemySeparation : IComponentData
+    {
+        public float SearchRadius;
+        public float PersonalSpace;
+        public float Strength;
+    }
 }

@@ -2,7 +2,7 @@
 
 namespace ShamanSurvivor.Code.Runtime
 {
-    public partial struct EnemySpawner : IComponentData
+    public struct EnemySpawner : IComponentData
     {
         public Entity Prefab;
 

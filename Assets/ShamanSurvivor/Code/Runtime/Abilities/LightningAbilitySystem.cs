@@ -1,5 +1,6 @@
 ﻿using ShamanSurvivor.Code.Runtime.Player;
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -36,9 +37,18 @@ namespace ShamanSurvivor.Code.Runtime
             
             float3 playerPosition = SystemAPI.GetComponent<LocalTransform>(playerEntity).Position;
 
-            Entity target = FindNearestTarget(playerPosition.xy, ability.ValueRO.Range, ref state);
+            SystemHandle gridHandle = state.WorldUnmanaged.GetExistingUnmanagedSystem<EnemySpatialGridSystem>();
 
-            if (target == Entity.Null)
+            ref EnemySpatialGridSystem gridSystem =
+                ref state.WorldUnmanaged.GetUnsafeSystemRef<EnemySpatialGridSystem>(gridHandle);
+            
+            gridSystem.BuildHandle.Complete();
+
+            var grid = gridSystem.Grid.AsReadOnly();
+
+            bool isTargetValid = SpatialQuery.TryFindNearest(grid, playerPosition.xy, ability.ValueRO.Range, out EnemySpatialEntry target);
+
+            if (!isTargetValid)
                 return;
 
             EntityCommandBuffer ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>()
@@ -55,7 +65,7 @@ namespace ShamanSurvivor.Code.Runtime
             ecb.SetComponent(projectile, new HomingProjectile
             {
                 Source = playerEntity,
-                Target = target,
+                Target = target.Entity,
                 Speed = ability.ValueRO.ProjectileSpeed,
                 Damage = ability.ValueRO.Damage,
                 RemainingLifetime = ability.ValueRO.ProjectileLifetime,
@@ -63,31 +73,6 @@ namespace ShamanSurvivor.Code.Runtime
             });
             
             ability.ValueRW.CooldownRemaining = ability.ValueRO.AttackInterval;
-        }
-
-        private Entity FindNearestTarget(float2 origin, float range, ref SystemState state)
-        {
-            Entity nearest = Entity.Null;
-
-            float nearestDistanceSq = range * range;
-
-            foreach (var (transform, health, entity) in SystemAPI.Query<RefRO<LocalTransform>, RefRO<Health>>()
-                         .WithAll<EnemyTag>()
-                         .WithEntityAccess())
-            {
-                if (health.ValueRO.Current <= 0)
-                    continue;
-
-                float distanceSq = math.distancesq(origin, transform.ValueRO.Position.xy);
-                
-                if (distanceSq >= nearestDistanceSq)
-                    continue;
-
-                nearestDistanceSq = distanceSq;
-                nearest = entity;
-            }
-
-            return nearest;
         }
     }
 }

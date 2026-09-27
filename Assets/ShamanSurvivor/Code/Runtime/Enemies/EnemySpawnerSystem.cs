@@ -32,7 +32,7 @@ namespace ShamanSurvivor.Code.Runtime
 
             float deltaTime = SystemAPI.Time.DeltaTime;
 
-            int aliveEnemies = _enemyQuery.CalculateChunkCount();
+            int aliveEnemies = _enemyQuery.CalculateEntityCount();
 
             var ecb = new EntityCommandBuffer(Allocator.Temp);
 

@@ -149,11 +149,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: ShamanSurvivor.Runtime::ShamanSurvivor.Code.Runtime.EnemySpawnerAuthoring
   _prefab: {fileID: 8689706146014545016, guid: 3d01e1b764c0457458fc09c7aa022d30, type: 3}
-  _spawnRate: 1
+  _spawnRate: 10
   _minSpawnRadius: 7
   _maxSpawnRadius: 10
-  _maxAlive: 200
-  _randomState: 213
+  _maxAlive: 50
+  _randomState: 254
 --- !u!4 &519844042
 Transform:
   m_ObjectHideFlags: 0
