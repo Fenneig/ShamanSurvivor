@@ -11,6 +11,11 @@ namespace ShamanSurvivor.Code.Runtime.Player
         [SerializeField] private float _hitRadius;
         [Header("Health")] 
         [SerializeField] private float _maxHealth;
+
+        [Header("Experience")]
+        [Min(1)]
+        [SerializeField] private int _firstLevelExperience = 5;
+        
         
         private class PlayerBaker : Baker<PlayerAuthoring>
         {
@@ -24,6 +29,13 @@ namespace ShamanSurvivor.Code.Runtime.Player
                 AddComponent(entity, new Health { Max = authoring._maxHealth, Current = authoring._maxHealth });
                 AddComponent(entity, new HitRadius { Value = authoring._hitRadius });
                 AddBuffer<DamageEvent>(entity);
+                AddComponent(entity, new PlayerExperience
+                {
+                    Current = 0,
+                    Level = 1,
+                    Required = authoring._firstLevelExperience,
+                    PendingLevelUps = 0
+                });
             }
         }
     }

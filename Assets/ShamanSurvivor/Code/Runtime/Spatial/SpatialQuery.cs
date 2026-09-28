@@ -205,38 +205,22 @@ namespace ShamanSurvivor.Code.Runtime
         private static float2 GetOverlapDirection(Entity first, Entity second)
         {
             int minIndex = math.min(first.Index, second.Index);
-
             int maxIndex = math.max(first.Index, second.Index);
-
             uint hash = math.hash(new uint2((uint)minIndex, (uint)maxIndex));
-
             float normalized = (hash & 0x00FFFFFFu) / 16777215f;
-
             float angle = normalized * math.PI * 2f;
-
             float2 direction = new float2(math.cos(angle), math.sin(angle));
-
+            
             return first.Index < second.Index
                 ? direction
                 : -direction;
         }
 
-        private static void GetCellBounds(
-            float2 origin,
-            float radius,
-            out int2 minCell,
-            out int2 maxCell)
+        private static void GetCellBounds(float2 origin, float radius, out int2 minCell, out int2 maxCell)
         {
-            float2 radiusVector =
-                new float2(radius);
-
-            minCell =
-                EnemySpatialGrid.PositionToCell(
-                    origin - radiusVector);
-
-            maxCell =
-                EnemySpatialGrid.PositionToCell(
-                    origin + radiusVector);
+            float2 radiusVector = new float2(radius);
+            minCell = EnemySpatialGrid.PositionToCell(origin - radiusVector);
+            maxCell = EnemySpatialGrid.PositionToCell(origin + radiusVector);
         }
     }
 }

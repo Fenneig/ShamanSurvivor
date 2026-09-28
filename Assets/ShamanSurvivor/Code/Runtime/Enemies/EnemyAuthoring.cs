@@ -27,6 +27,10 @@ namespace ShamanSurvivor.Code.Runtime
         [SerializeField] private float _personalSpace = 0.05f;
         [Min(0f)]
         [SerializeField] private float _separationStrength = 1f;
+
+        [Header("Experience")]
+        [Min(0)] 
+        [SerializeField] private int _experienceReward = 1;
         
 
         public class Baker : Baker<EnemyAuthoring>
@@ -47,6 +51,7 @@ namespace ShamanSurvivor.Code.Runtime
                     PersonalSpace = authoring._personalSpace,
                     Strength = authoring._separationStrength
                 });
+                AddComponent(entity, new ExperienceReward { Value = authoring._experienceReward });
             }
         }
     }
