@@ -1,4 +1,5 @@
 ﻿using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace ShamanSurvivor.Code.Runtime
@@ -18,14 +19,14 @@ namespace ShamanSurvivor.Code.Runtime
                 AddComponent(entity, new ProjectileBody { HitRadius = authoring._hitRadius });
                 
                 AddComponent(entity,
-                    new HomingProjectile
+                    new Projectile
                     {
                         Source = Entity.Null,
-                        Target = Entity.Null,
+                        Direction = float2.zero,
                         Speed = 0f,
                         Damage = 0f,
                         RemainingLifetime = 0f,
-                        DamageElement = DamageElement.Physical
+                        Element = DamageElement.Physical
                     });
             }
         }

@@ -46,9 +46,9 @@ namespace ShamanSurvivor.Code.Runtime
 
             var grid = gridSystem.Grid.AsReadOnly();
 
-            bool isTargetValid = SpatialQuery.TryFindNearest(grid, playerPosition.xy, ability.ValueRO.Range, out EnemySpatialEntry target);
+            bool targetFound = SpatialQuery.TryFindNearest(grid, playerPosition.xy, ability.ValueRO.Range, out EnemySpatialEntry target);
 
-            if (!isTargetValid)
+            if (!targetFound)
                 return;
 
             EntityCommandBuffer ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>()
@@ -57,19 +57,20 @@ namespace ShamanSurvivor.Code.Runtime
             LocalTransform projectileTransform = SystemAPI.GetComponent<LocalTransform>(ability.ValueRO.ProjectilePrefab);
             
             projectileTransform.Position = playerPosition;
+            float2 direction = math.normalizesafe(target.Position - playerPosition.xy);
             
             Entity projectile = ecb.Instantiate(ability.ValueRO.ProjectilePrefab);
 
             projectile.Set(ecb, projectileTransform);
             
-            ecb.SetComponent(projectile, new HomingProjectile
+            ecb.SetComponent(projectile, new Projectile
             {
                 Source = playerEntity,
-                Target = target.Entity,
+                Direction = direction,
                 Speed = ability.ValueRO.ProjectileSpeed,
                 Damage = ability.ValueRO.Damage,
                 RemainingLifetime = ability.ValueRO.ProjectileLifetime,
-                DamageElement = DamageElement.Lightning
+                Element = DamageElement.Lightning
             });
             
             ability.ValueRW.CooldownRemaining = ability.ValueRO.AttackInterval;

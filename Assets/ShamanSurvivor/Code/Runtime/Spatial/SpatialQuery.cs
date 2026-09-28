@@ -1,6 +1,7 @@
 ﻿using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Transforms;
 
 namespace ShamanSurvivor.Code.Runtime
 {
@@ -201,7 +202,96 @@ namespace ShamanSurvivor.Code.Runtime
 
             return correction;
         }
-        
+
+        public static bool TryFindFirstSegmentHit(
+            NativeParallelMultiHashMap<int2, EnemySpatialEntry>.ReadOnly grid, float2 start, float2 end, float radius,
+            out Entity hitEntity)
+        {
+            hitEntity = Entity.Null;
+
+            if (!grid.IsCreated)
+                return false;
+
+            float closestHitT = float.MaxValue;
+            float2 radiusVector = new float2(radius);
+            float2 minPosition = math.min(start, end) - radiusVector;
+            float2 maxPosition = math.max(start, end) + radiusVector;
+            int2 minCell = EnemySpatialGrid.PositionToCell(minPosition);
+            int2 maxCell = EnemySpatialGrid.PositionToCell(maxPosition);
+            minCell -= new int2(1);
+            maxCell += new int2(1);
+
+            for (int y = minCell.y; y <= maxCell.y; y++)
+            {
+                for (int x = minCell.x; x <= maxCell.x; x++)
+                {
+                    int2 cell = new int2(x, y);
+
+                    if (!grid.TryGetFirstValue(cell, out EnemySpatialEntry entry, out var iterator))
+                    {
+                        continue;
+                    }
+
+                    do
+                    {
+                        float combinedRadius = radius + entry.Radius;
+
+                        if (!TrySegmentCircleHit(start, end, entry.Position, combinedRadius, out float hitT))
+                            continue;
+
+                        if (hitT >= closestHitT)
+                            continue;
+
+                        closestHitT = hitT;
+                        hitEntity = entry.Entity;
+                    } while (grid.TryGetNextValue(out entry, ref iterator));
+                }
+            }
+            return hitEntity != Entity.Null;
+        }
+
+        private static bool TrySegmentCircleHit(float2 start, float2 end, float2 center, float radius, out float hitT)
+        {
+            float2 fromCenter = start - center;
+            float radiusSq = radius * radius;
+
+            if (math.lengthsq(fromCenter) <= radiusSq)
+            {
+                hitT = 0f;
+                return true;
+            }
+
+            float2 direction = end - start;
+            float segmentLengthSq = math.lengthsq(direction);
+
+            if (segmentLengthSq <= 0.000001f)
+            {
+                hitT = 0f;
+                return false;
+            }
+
+            float b = math.dot(fromCenter, direction);
+            float c = math.dot(fromCenter, fromCenter) - radiusSq;
+            float discriminant = b * b - segmentLengthSq * c;
+
+            if (discriminant < 0f)
+            {
+                hitT = 0f;
+                return false;
+            }
+
+            float t = (-b - math.sqrt(discriminant)) / segmentLengthSq;
+
+            if (t < 0f || t > 1f)
+            {
+                hitT = 0f;
+                return false;
+            }
+
+            hitT = t;
+            return true;
+        }
+
         private static float2 GetOverlapDirection(Entity first, Entity second)
         {
             int minIndex = math.min(first.Index, second.Index);
