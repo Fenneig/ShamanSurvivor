@@ -2,7 +2,7 @@
 using Unity.Entities;
 using Unity.Transforms;
 
-namespace ShamanSurvivor.Code.Runtime
+namespace ShamanSurvivor.Runtime
 {
     [BurstCompile]
     [UpdateInGroup(typeof(GameCombatSystemGroup))]

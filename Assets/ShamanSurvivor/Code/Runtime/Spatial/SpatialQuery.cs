@@ -1,9 +1,8 @@
 ﻿using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Transforms;
 
-namespace ShamanSurvivor.Code.Runtime
+namespace ShamanSurvivor.Runtime
 {
     public static class SpatialQuery
     {
@@ -289,6 +288,89 @@ namespace ShamanSurvivor.Code.Runtime
             }
 
             hitT = t;
+            return true;
+        }
+
+        public static bool TryFindFirstDamageableHit(NativeParallelMultiHashMap<int2, EnemySpatialEntry>.ReadOnly grid,
+            float2 start, float2 end, float projectileRadius, ComponentLookup<Health> healthLookup,
+            BufferLookup<DamageEvent> damageLookup, out Entity hitEntity)
+        {
+            hitEntity = Entity.Null;
+
+            if (!grid.IsCreated)
+                return false;
+
+            float closestHitT = float.MaxValue;
+
+            float2 radiusVector = new float2(projectileRadius);
+            
+            float2 minPosition = math.min(start, end) - radiusVector;
+            float2 maxPosition = math.max(start, end) + radiusVector;
+            
+            int2 minCell = EnemySpatialGrid.PositionToCell(minPosition);
+            int2 maxCell = EnemySpatialGrid.PositionToCell(maxPosition);
+            
+            minCell -= new int2(1);
+            maxCell += new int2(1);
+
+            for (int y = minCell.y; y <= maxCell.y; y++)
+            {
+                for (int x = minCell.x; x <= maxCell.x; x++)
+                {
+                    int2 cell = new int2(x, y);
+                    
+                    if (!grid.TryGetFirstValue(cell, out EnemySpatialEntry entry, out var iterator))
+                        continue;
+
+                    do
+                    {
+                        if (!CanReceiveDamage(entry.Entity, healthLookup, damageLookup))
+                            continue;
+
+                        float combinedRadius = projectileRadius + entry.Radius;
+
+                        if (!TrySegmentCircleHit(start, end, entry.Position, combinedRadius, out float hitT))
+                            continue;
+
+                        if (hitT >= closestHitT)
+                            continue;
+
+                        closestHitT = hitT;
+                        hitEntity = entry.Entity;
+                    }
+                    while (grid.TryGetNextValue(out entry, ref iterator));
+                }
+            }
+
+            return hitEntity != Entity.Null;
+        }
+
+        private static bool CanReceiveDamage(Entity entity, ComponentLookup<Health> healthLookup, BufferLookup<DamageEvent> damageLookup)
+        {
+            if (!healthLookup.HasComponent(entity))
+                return false;
+
+            if (!damageLookup.HasBuffer(entity))
+                return false;
+            
+            float effectiveHealth = healthLookup[entity].Current;
+
+            if (effectiveHealth <= 0)
+                return false;
+            
+            DynamicBuffer<DamageEvent> pendingDamage= damageLookup[entity];
+
+            foreach (var damageEvent in pendingDamage)
+            {
+                if (damageEvent.Amount < 0f)
+                    continue;
+                
+                effectiveHealth -= damageEvent.Amount;
+
+                if (effectiveHealth <= 0f)
+                    return false;
+            }
+
             return true;
         }
 

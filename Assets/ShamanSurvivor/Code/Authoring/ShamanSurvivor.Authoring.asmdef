@@ -3,8 +3,12 @@
     "rootNamespace": "",
     "references": [
         "GUID:2ab7d3c21f63df54d970ccc28580d350",
+        "GUID:89203ebce1bc80d458e8d20469fa1c72",
         "GUID:734d92eba21c94caba915361bd5ac177",
-        "GUID:e0cd26848372d4e5c891c569017e11f1"
+        "GUID:e0cd26848372d4e5c891c569017e11f1",
+        "GUID:d8b63aba1907145bea998dd612889d6b",
+        "GUID:8819f35a0fc84499b990e90a4ca1911f",
+        "GUID:6aa09cec121ec2a468af925f739cd4b3"
     ],
     "includePlatforms": [
         "Editor",
@@ -15,7 +19,7 @@
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
-    "autoReferenced": true,
+    "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false

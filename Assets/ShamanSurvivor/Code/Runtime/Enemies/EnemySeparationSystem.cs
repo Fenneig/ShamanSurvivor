@@ -5,7 +5,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-namespace ShamanSurvivor.Code.Runtime
+namespace ShamanSurvivor.Runtime
 {
     [BurstCompile]
     [UpdateInGroup(typeof(GameSeparationSystemGroup))]

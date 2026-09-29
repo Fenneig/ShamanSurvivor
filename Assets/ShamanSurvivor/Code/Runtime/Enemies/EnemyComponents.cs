@@ -1,6 +1,6 @@
 ﻿using Unity.Entities;
 
-namespace ShamanSurvivor.Code.Runtime
+namespace ShamanSurvivor.Runtime
 {
     public struct EnemyTag : IComponentData
     {

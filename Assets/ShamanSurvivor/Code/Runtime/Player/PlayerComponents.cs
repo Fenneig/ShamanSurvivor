@@ -1,7 +1,7 @@
 ﻿using Unity.Entities;
 using Unity.Mathematics;
 
-namespace ShamanSurvivor.Code.Runtime.Player
+namespace ShamanSurvivor.Runtime
 {
     public struct PlayerTag : IComponentData{}
 

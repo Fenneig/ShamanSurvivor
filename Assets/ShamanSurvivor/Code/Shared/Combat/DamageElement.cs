@@ -1,4 +1,4 @@
-﻿namespace ShamanSurvivor.Code.Runtime
+﻿namespace ShamanSurvivor.Shared
 {
     public enum DamageElement : byte
     {

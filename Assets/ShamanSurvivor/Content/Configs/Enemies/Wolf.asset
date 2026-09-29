@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cb094dd17664e70b7eab82f443c7be1, type: 3}
+  m_Name: Wolf
+  m_EditorClassIdentifier: ShamanSurvivor.Configs::ShamanSurvivor.Code.EnemyConfig
+  MoveSpeed: 2
+  HitRadius: 0.35
+  MaxHealth: 10
+  ContactDamage: 10
+  ContactDamageInterval: 1
+  SeparationSearchRadius: 1.25
+  PersonalSpace: 0.05
+  SeparationStrength: 8
+  ExperienceReward: 1

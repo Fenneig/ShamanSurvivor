@@ -1,10 +1,9 @@
-﻿using ShamanSurvivor.Code.Runtime.Player;
-using Unity.Burst;
+﻿using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-namespace ShamanSurvivor.Code.Runtime
+namespace ShamanSurvivor.Runtime
 {
     [BurstCompile]
     [UpdateInGroup(typeof(GameMovementSystemGroup))]

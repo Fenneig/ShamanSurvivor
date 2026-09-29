@@ -1,17 +1,13 @@
-﻿using Unity.Entities;
+﻿using ShamanSurvivor.Configs;
+using ShamanSurvivor.Runtime;
+using Unity.Entities;
 using UnityEngine;
 
-namespace ShamanSurvivor.Code.Runtime
+namespace ShamanSurvivor.Authoring
 {
     public class ExperienceOrbAuthoring : MonoBehaviour
     {
-        [Header("Pickup")]
-        [Min(0f)]
-        [SerializeField] private float _magnetRadius;
-        [Min(0f)] 
-        [SerializeField] private float _collectRadius;
-        [Min(0f)]
-        [SerializeField] private float _moveSpeed;
+        [SerializeField] private XpOrbConfig _config;
 
         public class Baker : Baker<ExperienceOrbAuthoring>
         {
@@ -22,9 +18,9 @@ namespace ShamanSurvivor.Code.Runtime
                     new ExperienceOrb
                     {
                         Value = 0,
-                        MagnetRadius = authoring._magnetRadius,
-                        CollectRadius = authoring._collectRadius,
-                        MoveSpeed = authoring._moveSpeed
+                        MagnetRadius = authoring._config.MagnetRadius,
+                        CollectRadius = authoring._config.CollectRadius,
+                        MoveSpeed = authoring._config.MoveSpeed
                     });
             }
         }

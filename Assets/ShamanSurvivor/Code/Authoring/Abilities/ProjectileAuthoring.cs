@@ -1,8 +1,10 @@
-﻿using Unity.Entities;
+﻿using ShamanSurvivor.Runtime;
+using ShamanSurvivor.Shared;
+using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace ShamanSurvivor.Code.Runtime
+namespace ShamanSurvivor.Authoring
 {
     public class ProjectileAuthoring : MonoBehaviour
     {
@@ -17,7 +19,6 @@ namespace ShamanSurvivor.Code.Runtime
                 
                 AddComponent(entity, new ProjectileTag());
                 AddComponent(entity, new ProjectileBody { HitRadius = authoring._hitRadius });
-                
                 AddComponent(entity,
                     new Projectile
                     {

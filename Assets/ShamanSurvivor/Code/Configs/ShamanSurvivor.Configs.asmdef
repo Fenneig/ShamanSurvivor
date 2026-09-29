@@ -1,0 +1,18 @@
+{
+    "name": "ShamanSurvivor.Configs",
+    "rootNamespace": "",
+    "references": ["GUID:2ab7d3c21f63df54d970ccc28580d350","GUID:6aa09cec121ec2a468af925f739cd4b3"],
+    "includePlatforms": [
+        "Editor",
+        "WebGL",
+        "WindowsStandalone64"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

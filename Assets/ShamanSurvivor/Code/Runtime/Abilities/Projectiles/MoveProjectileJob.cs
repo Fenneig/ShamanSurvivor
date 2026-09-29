@@ -4,14 +4,15 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-namespace ShamanSurvivor.Code.Runtime
+namespace ShamanSurvivor.Runtime
 {
     [BurstCompile]
     [WithAll(typeof(ProjectileTag))]
     public partial struct MoveProjectileJob : IJobEntity
     {
         [ReadOnly] public NativeParallelMultiHashMap<int2, EnemySpatialEntry>.ReadOnly Grid;
-        
+        [ReadOnly] public ComponentLookup<Health> HealthLookup;
+
         public BufferLookup<DamageEvent> DamageBufferLookup;
         public EntityCommandBuffer ECB;
 
@@ -34,7 +35,7 @@ namespace ShamanSurvivor.Code.Runtime
 
             float2 start = transform.Position.xy;
             float2 end = start + projectile.Direction * projectile.Speed * DeltaTime;
-            bool hit = SpatialQuery.TryFindFirstSegmentHit(Grid, start, end, body.HitRadius, out Entity hitEntity);
+            bool hit = SpatialQuery.TryFindFirstDamageableHit(Grid, start, end, body.HitRadius, HealthLookup, DamageBufferLookup, out Entity hitEntity);
 
             if (hit)
             {

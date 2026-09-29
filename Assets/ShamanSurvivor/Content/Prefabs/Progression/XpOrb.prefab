@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc06544f251f4b1ebe037ceb4940f4fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ShamanSurvivor.Runtime::ShamanSurvivor.Code.Runtime.ExperienceOrbAuthoring
+  _config: {fileID: 11400000, guid: 1c2f0ae677c01f14d9b898eaf0553224, type: 2}
   _magnetRadius: 2
   _collectRadius: 0.25
   _moveSpeed: 8

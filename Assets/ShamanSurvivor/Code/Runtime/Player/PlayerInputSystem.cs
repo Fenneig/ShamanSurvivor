@@ -2,7 +2,7 @@
 using Unity.Mathematics;
 using UnityEngine.InputSystem;
 
-namespace ShamanSurvivor.Code.Runtime.Player
+namespace ShamanSurvivor.Runtime
 {
     [UpdateInGroup(typeof(GameInputSystemGroup))]
     public partial class PlayerInputSystem : SystemBase

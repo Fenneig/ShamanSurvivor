@@ -4,9 +4,8 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEditorInternal;
 
-namespace ShamanSurvivor.Code.Runtime
+namespace ShamanSurvivor.Runtime
 {
     [BurstCompile]
     [UpdateInGroup(typeof(GameSpatialSystemGroup))]

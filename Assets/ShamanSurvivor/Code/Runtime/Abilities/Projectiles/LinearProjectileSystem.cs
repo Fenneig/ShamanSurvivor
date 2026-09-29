@@ -1,9 +1,8 @@
 ﻿using Unity.Burst;
 using Unity.Entities;
 using Unity.Jobs;
-using Unity.Transforms;
 
-namespace ShamanSurvivor.Code.Runtime
+namespace ShamanSurvivor.Runtime
 {
     [BurstCompile]
     [UpdateInGroup(typeof(GameAbilitySystemGroup))]
@@ -23,6 +22,7 @@ namespace ShamanSurvivor.Code.Runtime
             SystemHandle gridHandle = state.WorldUnmanaged.GetExistingUnmanagedSystem<EnemySpatialGridSystem>();
             ref EnemySpatialGridSystem gridSystem = ref state.WorldUnmanaged.GetUnsafeSystemRef<EnemySpatialGridSystem>(gridHandle);
             BufferLookup<DamageEvent> damageBufferLookup = SystemAPI.GetBufferLookup<DamageEvent>();
+            ComponentLookup<Health> healthLookup = SystemAPI.GetComponentLookup<Health>();
             EntityCommandBuffer ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             JobHandle dependency = JobHandle.CombineDependencies(state.Dependency, gridSystem.BuildHandle);
 
@@ -31,7 +31,8 @@ namespace ShamanSurvivor.Code.Runtime
                     Grid = gridSystem.Grid.AsReadOnly(),
                     DamageBufferLookup = damageBufferLookup,
                     ECB = ecb,
-                    DeltaTime = SystemAPI.Time.DeltaTime
+                    DeltaTime = SystemAPI.Time.DeltaTime,
+                    HealthLookup = healthLookup
                 };
 
             JobHandle handle = job.Schedule(dependency);

@@ -2,7 +2,7 @@
 using Unity.Entities;
 using Unity.Mathematics;
 
-namespace ShamanSurvivor.Code.Runtime
+namespace ShamanSurvivor.Runtime
 {
     [BurstCompile]
     [UpdateInGroup(typeof(GameCombatSystemGroup))]

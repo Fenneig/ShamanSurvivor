@@ -1,6 +1,7 @@
-﻿using Unity.Entities;
+﻿using ShamanSurvivor.Shared;
+using Unity.Entities;
 
-namespace ShamanSurvivor.Code.Runtime
+namespace ShamanSurvivor.Runtime
 {
     [InternalBufferCapacity(4)]
     public struct DamageEvent : IBufferElementData

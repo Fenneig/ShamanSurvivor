@@ -3,8 +3,9 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-namespace ShamanSurvivor.Code.Runtime.Player
+namespace ShamanSurvivor.Runtime
 {
+    [UpdateInGroup(typeof(GameMovementSystemGroup))]
     public partial struct PlayerMoveSystem : ISystem
     {
         [BurstCompile]

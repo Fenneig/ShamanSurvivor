@@ -1,5 +1,4 @@
-﻿using ShamanSurvivor.Code.Runtime.Player;
-using Unity.Burst;
+﻿using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -7,7 +6,7 @@ using Unity.Transforms;
 using UnityEngine;
 using Random = Unity.Mathematics.Random;
 
-namespace ShamanSurvivor.Code.Runtime
+namespace ShamanSurvivor.Runtime
 {
     [UpdateInGroup(typeof(GameSpawnSystemGroup))]
     public partial struct EnemySpawnerSystem : ISystem

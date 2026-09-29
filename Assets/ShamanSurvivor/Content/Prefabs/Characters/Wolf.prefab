@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37e0221f8b284c7a8cbf5732642a3267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ShamanSurvivor.Runtime::ShamanSurvivor.Code.Runtime.EnemyAuthoring
+  _config: {fileID: 11400000, guid: 26835b2909fe4b4499323ce6f66bbd97, type: 2}
   _maxHealth: 10
   _speed: 2
   _hitRadius: 0.35
@@ -54,6 +55,7 @@ MonoBehaviour:
   _separationSearchRadius: 1.25
   _personalSpace: 0.05
   _separationStrength: 8
+  _experienceReward: 1
 --- !u!33 &2414342637525514532
 MeshFilter:
   m_ObjectHideFlags: 0

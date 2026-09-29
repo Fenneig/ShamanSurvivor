@@ -1,7 +1,8 @@
-﻿using Unity.Entities;
+﻿using ShamanSurvivor.Runtime;
+using Unity.Entities;
 using UnityEngine;
 
-namespace ShamanSurvivor.Code.Runtime
+namespace ShamanSurvivor.Authoring
 {
     public class ExperienceDropSettingsAuthoring : MonoBehaviour
     {
