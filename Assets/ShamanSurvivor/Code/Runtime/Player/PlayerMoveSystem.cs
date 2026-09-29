@@ -1,4 +1,5 @@
-﻿using Unity.Burst;
+﻿using ShamanSurvivor.Shared;
+using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -19,13 +20,15 @@ namespace ShamanSurvivor.Runtime
         {
             float deltaTime = SystemAPI.Time.DeltaTime;
 
-            foreach (var (transform, movement, input) in 
-                     SystemAPI.Query<RefRW<LocalTransform>, RefRO<PlayerMovement>, RefRO<PlayerInput>>()
+            foreach (var (transform, movement, passiveProgresses, input) in 
+                     SystemAPI.Query<RefRW<LocalTransform>, RefRO<PlayerMovement>, DynamicBuffer<PassiveProgress>, RefRO<PlayerInput>>()
                          .WithAll<PlayerTag>())
             {
                 float3 position = transform.ValueRO.Position;
                 
-                position.xy += input.ValueRO.Move * movement.ValueRO.Speed * deltaTime;
+                float effectiveMove = movement.ValueRO.Speed * (1f + PassiveProgressUtility.GetBonus(passiveProgresses, GlobalPassiveId.MoveSpeed));
+                
+                position.xy += input.ValueRO.Move * effectiveMove * deltaTime;
                 
                 transform.ValueRW.Position = position;
             }

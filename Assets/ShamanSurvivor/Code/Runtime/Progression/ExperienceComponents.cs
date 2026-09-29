@@ -24,5 +24,7 @@ namespace ShamanSurvivor.Runtime
         public int Required;
 
         public int PendingLevelUps;
+
+        public float Reminder;
     }
 }

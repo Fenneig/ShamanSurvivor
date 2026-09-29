@@ -18,14 +18,19 @@ namespace ShamanSurvivor.Runtime
     {
         public int SelectedIndex;
         public uint RandomState;
+        public uint Revision;
     }
 
     [InternalBufferCapacity(3)]
     public struct LevelUpOption : IBufferElementData
     {
+        public LevelUpOptionType Type;
+        
         public AbilityId Ability;
         public UpgradeKey Key;
 
+        public GlobalPassiveId Passive;
+        
         public float Bonus;
         
         public int CurrentPicks;

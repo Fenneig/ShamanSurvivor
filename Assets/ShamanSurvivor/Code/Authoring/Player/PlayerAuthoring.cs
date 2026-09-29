@@ -27,11 +27,13 @@ namespace ShamanSurvivor.Authoring
                     Current = 0,
                     Level = 1,
                     Required = authoring._config.FirstLevelExperience,
-                    PendingLevelUps = 0
+                    PendingLevelUps = 0,
+                    Reminder = 0f
                 });
                 AddBuffer<UpgradeProgress>(entity);
                 DynamicBuffer<UnlockedAbility> abilities = AddBuffer<UnlockedAbility>(entity);
                 abilities.Add(new UnlockedAbility { Value = AbilityId.Lightning });
+                AddBuffer<PassiveProgress>(entity);
             }
         }
     }

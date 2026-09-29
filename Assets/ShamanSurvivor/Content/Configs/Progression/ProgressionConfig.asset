@@ -25,4 +25,14 @@ MonoBehaviour:
   - Ability: 0
     Key: 2
     BonusPerPick: 1
-    MaxPicks: 2
+    MaxPicks: 10
+  Passives:
+  - Passive: 0
+    BonusPerPick: 0.1
+    MaxPicks: 5
+  - Passive: 1
+    BonusPerPick: 0.2
+    MaxPicks: 5
+  - Passive: 2
+    BonusPerPick: 0.1
+    MaxPicks: 5

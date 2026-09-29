@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: LightningConfig
   m_EditorClassIdentifier: ShamanSurvivor.Configs::ShamanSurvivor.Code.LightningConfig
   Range: 8
-  Damage: 10
-  AttackInterval: 0.75
+  Damage: 5
+  AttackInterval: 0.65
   ProjectilePrefab: {fileID: 2929988893149068468, guid: d72baca30af6097448eae2779a847bc8, type: 3}
   ProjectileSpeed: 6
   ProjectileLifetime: 5

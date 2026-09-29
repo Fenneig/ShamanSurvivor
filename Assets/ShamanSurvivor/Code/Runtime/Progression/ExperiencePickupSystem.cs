@@ -1,4 +1,5 @@
-﻿using Unity.Burst;
+﻿using ShamanSurvivor.Shared;
+using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -22,6 +23,9 @@ namespace ShamanSurvivor.Runtime
         {
             Entity player = SystemAPI.GetSingletonEntity<PlayerTag>();
             float2 playerPosition = SystemAPI.GetComponent<LocalTransform>(player).Position.xy;
+            DynamicBuffer<PassiveProgress> passiveProgresses = SystemAPI.GetBuffer<PassiveProgress>(player);
+            float experienceBonus = PassiveProgressUtility.GetBonus(passiveProgresses, GlobalPassiveId.ExperienceGain);
+            float radiusBonus = PassiveProgressUtility.GetBonus(passiveProgresses, GlobalPassiveId.PickupRadius);
             float deltaTime = SystemAPI.Time.DeltaTime;
             int collectedExperience = 0;
 
@@ -31,11 +35,8 @@ namespace ShamanSurvivor.Runtime
                          .WithEntityAccess())
             {
                 float2 position = transform.ValueRO.Position.xy;
-
                 float2 toPlayer = playerPosition - position;
-                
                 float distanceSq = math.lengthsq(toPlayer);
-                
                 float collectRadiusSq = orb.ValueRO.CollectRadius * orb.ValueRO.CollectRadius;
 
                 if (distanceSq <= collectRadiusSq)
@@ -46,8 +47,9 @@ namespace ShamanSurvivor.Runtime
                     
                     continue;
                 }
-                
-                float magnetRadiusSq = orb.ValueRO.MagnetRadius * orb.ValueRO.MagnetRadius;
+
+                float effectRadius = orb.ValueRO.MagnetRadius * (1 + radiusBonus);
+                float magnetRadiusSq = effectRadius * effectRadius;
 
                 if (distanceSq > magnetRadiusSq)
                     continue;
@@ -70,7 +72,14 @@ namespace ShamanSurvivor.Runtime
             
             RefRW<PlayerExperience> experience = SystemAPI.GetComponentRW<PlayerExperience>(player);
 
-            AddExperience(ref experience.ValueRW, collectedExperience);
+            float modifiedExperience = collectedExperience * (1f + experienceBonus);
+
+            modifiedExperience += experience.ValueRO.Reminder;
+            
+            int wholeExperience = (int)math.floor(modifiedExperience);
+            experience.ValueRW.Reminder = modifiedExperience - wholeExperience;
+            
+            AddExperience(ref experience.ValueRW, wholeExperience);
         }
 
         private void AddExperience(ref PlayerExperience experience, int value)
@@ -79,11 +88,8 @@ namespace ShamanSurvivor.Runtime
             while (experience.Current >= experience.Required)
             {
                 experience.Current -= experience.Required;
-
                 experience.Level++;
-
                 experience.PendingLevelUps++;
-
                 experience.Required = GetRequiredExperience(experience.Level);
             }
         }

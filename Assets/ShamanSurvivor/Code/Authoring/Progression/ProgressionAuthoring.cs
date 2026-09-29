@@ -16,8 +16,14 @@ namespace ShamanSurvivor.Authoring
                 Entity entity = GetEntity(TransformUsageFlags.None);
 
                 AddComponent(entity, new GameFlowState { Phase = GamePhase.Playing });
-                AddComponent(entity, new LevelUpState { RandomState = authoring._config.RandomSeed, SelectedIndex = -1 });
+                AddComponent(entity, new LevelUpState 
+                {
+                    RandomState = authoring._config.RandomSeed, 
+                    SelectedIndex = -1,
+                    Revision = 0
+                });
                 AddBuffer<LevelUpOption>(entity);
+                
                 DynamicBuffer<UpgradeDefinition> definitions = AddBuffer<UpgradeDefinition>(entity);
 
                 foreach (var entry in authoring._config.Upgrades)
@@ -28,6 +34,18 @@ namespace ShamanSurvivor.Authoring
                         Key = entry.Key,
                         BonusPerPick = entry.BonusPerPick,
                         MaxPicks = entry.MaxPicks
+                    });
+                }
+                
+                DynamicBuffer<PassiveDefinition> passiveDefinitions = AddBuffer<PassiveDefinition>(entity);
+
+                foreach (var passive in authoring._config.Passives)
+                {
+                    passiveDefinitions.Add(new PassiveDefinition
+                    {
+                        Passive = passive.Passive,
+                        BonusPerPick = passive.BonusPerPick,
+                        MaxPicks = passive.MaxPicks
                     });
                 }
             }

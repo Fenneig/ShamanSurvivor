@@ -19,8 +19,15 @@ namespace ShamanSurvivor.Configs
 
             public float BonusPerPick;
 
-            [Min(1)]
-            public int MaxPicks;
+            [Min(1)] public int MaxPicks;
+        }
+        
+        [Serializable]
+        public struct PassiveEntry
+        {
+            public GlobalPassiveId Passive;
+            public float BonusPerPick;
+            [Min(1)] public int MaxPicks;
         }
 
         [Min(1)]
@@ -29,5 +36,9 @@ namespace ShamanSurvivor.Configs
         [TableList]
 #endif
         public List<UpgradeEntry> Upgrades = new();
+#if ODIN_INSPECTOR
+        [TableList]
+#endif
+        public List<PassiveEntry> Passives = new();
     }
 }
