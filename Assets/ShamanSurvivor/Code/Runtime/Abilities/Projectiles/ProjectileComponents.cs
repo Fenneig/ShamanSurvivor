@@ -24,4 +24,21 @@ namespace ShamanSurvivor.Runtime
         
         public DamageElement Element;
     }
+
+    public struct ProjectileModifierSnapshot : IComponentData
+    {
+        public float SizeMultiplier;
+        public float DurationMultiplier;
+        public float EffectStrengthMultiplier;
+        public float DamageMultiplier;
+    }
+
+    public struct ProjectileHitEvent : IComponentData
+    {
+        public Entity Target;
+        
+        public float2 Position;
+    }
+    
+    public struct DirectImpact : IComponentData { }
 }

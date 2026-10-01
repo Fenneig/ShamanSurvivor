@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4179605252965668907}
   - component: {fileID: 3188840846965669177}
   - component: {fileID: 4340808699521982831}
-  - component: {fileID: 5409301429774782757}
+  - component: {fileID: 1518226325011843099}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -60,7 +60,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: HybridEntityViews::Unity.Entities.HybridViews.Modules.HybridEntityViews.EntityViewPrefabAuthoring
   _value: {fileID: 822496012456023322, guid: c9fe36bb85ebea647ad75fb7af34aefe, type: 3}
---- !u!114 &5409301429774782757
+--- !u!114 &1518226325011843099
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -69,13 +69,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8689706146014545016}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de2e4f09c8b145099ba8609a4d56f162, type: 3}
+  m_Script: {fileID: 11500000, guid: 372bed0378784fb6a8b4e975a421e7ae, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ShamanSurvivor.Runtime::ShamanSurvivor.Code.Runtime.LightningAbilityAuthoring
-  _lightningConfig: {fileID: 11400000, guid: 1038ebc559897ac4eb59e2544f40f429, type: 2}
-  _projectilePrefab: {fileID: 2929988893149068468, guid: d72baca30af6097448eae2779a847bc8, type: 3}
-  _projectileSpeed: 6
-  _projectileLifetime: 5
-  _damage: 5
-  _attackInterval: 0.75
-  _range: 8
+  m_EditorClassIdentifier: ShamanSurvivor.Authoring::ShamanSurvivor.Authoring.ProjectileAbilityCatalogAuthoring
+  _config: {fileID: 11400000, guid: 1328f10b323bda441a3764f69d5b5893, type: 2}

@@ -31,8 +31,8 @@ namespace ShamanSurvivor.Authoring
                     Reminder = 0f
                 });
                 AddBuffer<UpgradeProgress>(entity);
-                DynamicBuffer<UnlockedAbility> abilities = AddBuffer<UnlockedAbility>(entity);
-                abilities.Add(new UnlockedAbility { Value = AbilityId.Lightning });
+                DynamicBuffer<AbilityState> abilities = AddBuffer<AbilityState>(entity);
+                abilities.Add(new AbilityState { Ability = AbilityId.Lightning, CooldownRemaining = 0 });
                 AddBuffer<PassiveProgress>(entity);
             }
         }

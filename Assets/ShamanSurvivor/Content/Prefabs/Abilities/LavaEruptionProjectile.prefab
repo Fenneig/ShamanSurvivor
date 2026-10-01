@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1550176749042990789}
-  - component: {fileID: 2469806800947790867}
-  - component: {fileID: 4866948538402223856}
+  - component: {fileID: 8289698294039797719}
+  - component: {fileID: -6767744292235508289}
   - component: {fileID: 2699463594918054251}
   - component: {fileID: 4990542690735053381}
   m_Layer: 0
-  m_Name: LightningProjectile
+  m_Name: LavaEruptionProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35,7 +35,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2469806800947790867
+--- !u!114 &8289698294039797719
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -46,9 +46,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0de778442f6a4063b81a6d11479b22b1, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ShamanSurvivor.Runtime::ShamanSurvivor.Code.Runtime.ProjectileAuthoring
+  m_EditorClassIdentifier: ShamanSurvivor.Authoring::ShamanSurvivor.Authoring.ProjectileAuthoring
   _hitRadius: 0.15
---- !u!114 &4866948538402223856
+--- !u!114 &-6767744292235508289
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -57,9 +57,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2929988893149068468}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22f5d30492954701b95e3e2abe5da5cc, type: 3}
+  m_Script: {fileID: 11500000, guid: b925c1b7188f481c91fe4626afa8780f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ShamanSurvivor.Authoring::ShamanSurvivor.Authoring.DirectImpactAuthoring
+  m_EditorClassIdentifier: ShamanSurvivor.Authoring::ShamanSurvivor.Authoring.LavaProjectileAuthoring
+  _config: {fileID: 11400000, guid: abffc3373d47c6a4a917615d67947d28, type: 2}
 --- !u!33 &2699463594918054251
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -93,7 +94,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 461118b294953c544af5b0815600101f, type: 2}
+  - {fileID: 2100000, guid: b9ab7531109b755498dc9a8612c38835, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

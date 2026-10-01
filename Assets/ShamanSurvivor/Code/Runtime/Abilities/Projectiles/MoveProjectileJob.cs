@@ -35,30 +35,27 @@ namespace ShamanSurvivor.Runtime
 
             float2 start = transform.Position.xy;
             float2 end = start + projectile.Direction * projectile.Speed * DeltaTime;
-            bool hit = SpatialQuery.TryFindFirstDamageableHit(Grid, start, end, body.HitRadius, HealthLookup, DamageBufferLookup, out Entity hitEntity);
+            bool hit = SpatialQuery.TryFindFirstDamageableHit(Grid, start, end, body.HitRadius, HealthLookup, DamageBufferLookup, out float hitT ,out Entity hitEntity);
 
             if (hit)
             {
-                if (DamageBufferLookup.HasBuffer(hitEntity))
+                float2 hitPosition = math.lerp(start, end, hitT);
+
+                float3 position = transform.Position;
+                position.xy = hitPosition;
+                
+                ECB.AddComponent(entity, new ProjectileHitEvent
                 {
-                    DynamicBuffer<DamageEvent> damageBuffer = DamageBufferLookup[hitEntity];
-
-                    damageBuffer.Add(new DamageEvent
-                    {
-                        Source = projectile.Source,
-                        Amount = projectile.Damage,
-                        Element = projectile.Element
-                    });
-                }
-
-                ECB.DestroyEntity(entity);
+                    Target = hitEntity,
+                    Position = hitPosition
+                });
 
                 return;
             }
 
-            float3 position = transform.Position;
-            position.xy = end;
-            transform.Position = position;
+            float3 newPosition = transform.Position;
+            newPosition.xy = end;
+            transform.Position = newPosition;
         }
     }
 }

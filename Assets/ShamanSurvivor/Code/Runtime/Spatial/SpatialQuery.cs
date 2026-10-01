@@ -293,9 +293,10 @@ namespace ShamanSurvivor.Runtime
 
         public static bool TryFindFirstDamageableHit(NativeParallelMultiHashMap<int2, EnemySpatialEntry>.ReadOnly grid,
             float2 start, float2 end, float projectileRadius, ComponentLookup<Health> healthLookup,
-            BufferLookup<DamageEvent> damageLookup, out Entity hitEntity)
+            BufferLookup<DamageEvent> damageLookup, out float hitT, out Entity hitEntity)
         {
             hitEntity = Entity.Null;
+            hitT = float.MaxValue;
 
             if (!grid.IsCreated)
                 return false;
@@ -329,7 +330,7 @@ namespace ShamanSurvivor.Runtime
 
                         float combinedRadius = projectileRadius + entry.Radius;
 
-                        if (!TrySegmentCircleHit(start, end, entry.Position, combinedRadius, out float hitT))
+                        if (!TrySegmentCircleHit(start, end, entry.Position, combinedRadius, out hitT))
                             continue;
 
                         if (hitT >= closestHitT)

@@ -100,6 +100,9 @@ namespace ShamanSurvivor.Presentation
                     case LevelUpOptionType.GlobalPassive:
                         _cards[i].BindPassive(i, option, _levelUpCardCatalog, SelectOption);
                         break;
+                    case LevelUpOptionType.UnlockAbility:
+                        _cards[i].BindUnlockAbility(i, option, _levelUpCardCatalog, SelectOption);
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }

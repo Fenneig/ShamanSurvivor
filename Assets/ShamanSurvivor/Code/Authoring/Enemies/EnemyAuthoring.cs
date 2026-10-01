@@ -28,6 +28,14 @@ namespace ShamanSurvivor.Authoring
                     Strength = authoring._config.SeparationStrength
                 });
                 AddComponent(entity, new ExperienceReward { Value = authoring._config.ExperienceReward });
+                AddComponent(entity, new Burning
+                {
+                    Source = Entity.Null,
+                    DamagePerTick = 0,
+                    TickInterval = 0,
+                    TickTimer = 0,
+                    RemainingDuration = 0
+                });
             }
         }
     }

@@ -4,5 +4,6 @@
     {
         AbilityUpgrade = 0,
         GlobalPassive = 1,
+        UnlockAbility = 2
     }
 }

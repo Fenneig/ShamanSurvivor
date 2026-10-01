@@ -29,6 +29,12 @@ namespace ShamanSurvivor.Authoring
                         RemainingLifetime = 0f,
                         Element = DamageElement.Physical
                     });
+                AddComponent(entity, new ProjectileModifierSnapshot
+                {
+                    SizeMultiplier = 1f,
+                    DurationMultiplier = 1f,
+                    EffectStrengthMultiplier = 1f
+                });
             }
         }
     }

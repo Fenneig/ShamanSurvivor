@@ -22,6 +22,7 @@ namespace ShamanSurvivor.Runtime
         {
             state.RequireForUpdate<PlayerTag>();
             state.RequireForUpdate<GameFlowState>();
+            state.RequireForUpdate<AbilityCatalogTag>();
         }
 
         [BurstCompile]
@@ -34,18 +35,29 @@ namespace ShamanSurvivor.Runtime
             RefRW<GameFlowState> flow = SystemAPI.GetComponentRW<GameFlowState>(progressionEntity);
             RefRW<LevelUpState> levelUp = SystemAPI.GetComponentRW<LevelUpState>(progressionEntity);
             DynamicBuffer<LevelUpOption> options = SystemAPI.GetBuffer<LevelUpOption>(progressionEntity);
-            DynamicBuffer<UpgradeDefinition> definitions = SystemAPI.GetBuffer<UpgradeDefinition>(progressionEntity);
-            DynamicBuffer<UpgradeProgress> progress = SystemAPI.GetBuffer<UpgradeProgress>(player);
-            DynamicBuffer<UnlockedAbility> unlocked = SystemAPI.GetBuffer<UnlockedAbility>(player);
+            DynamicBuffer<UpgradeDefinition> upgradeDefinitions = SystemAPI.GetBuffer<UpgradeDefinition>(progressionEntity);
+            DynamicBuffer<UpgradeProgress> upgradeProgress = SystemAPI.GetBuffer<UpgradeProgress>(player);
+            DynamicBuffer<AbilityState> unlockedAbilities = SystemAPI.GetBuffer<AbilityState>(player);
             DynamicBuffer<PassiveDefinition> passiveDefinitions = SystemAPI.GetBuffer<PassiveDefinition>(progressionEntity);
             DynamicBuffer<PassiveProgress> passiveProgress = SystemAPI.GetBuffer<PassiveProgress>(player);
+            
+            DynamicBuffer<AbilityState> abilities = SystemAPI.GetBuffer<AbilityState>(player);
+            Entity projectileCatalogEntity = SystemAPI.GetSingletonEntity<AbilityCatalogTag>();
+            DynamicBuffer<ProjectileAbilityDefinition> projectileDefinitions = SystemAPI.GetBuffer<ProjectileAbilityDefinition>(projectileCatalogEntity);
 
             if (flow.ValueRO.Phase == GamePhase.Playing)
             {
                 if (experience.ValueRO.PendingLevelUps <= 0)
                     return;
 
-                bool generated = GenerateOptions(definitions, progress, unlocked, options, passiveDefinitions, passiveProgress, ref levelUp.ValueRW);
+                bool generated = GenerateOptions(
+                    upgradeDefinitions,
+                    upgradeProgress, 
+                    unlockedAbilities,
+                    options, 
+                    passiveDefinitions,
+                    passiveProgress,
+                    projectileDefinitions, ref levelUp.ValueRW);
                 
                 if (!generated)
                     return;
@@ -64,10 +76,20 @@ namespace ShamanSurvivor.Runtime
 
             LevelUpOption selected = options[selectedIndex];
 
-            if (selected.Type == LevelUpOptionType.AbilityUpgrade)
-                ApplyUpgrade(selected, progress);
-            else if (selected.Type == LevelUpOptionType.GlobalPassive)
-                ApplyPassive(selected, passiveProgress);
+            switch (selected.Type)
+            {
+                case LevelUpOptionType.AbilityUpgrade:
+                    ApplyUpgrade(selected, upgradeProgress);
+                    break;
+                case LevelUpOptionType.GlobalPassive:
+                    ApplyPassive(selected, passiveProgress);
+                    break;
+                case LevelUpOptionType.UnlockAbility:
+                    UnlockAbility(selected, unlockedAbilities);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
             experience.ValueRW.PendingLevelUps--;
 
@@ -75,7 +97,7 @@ namespace ShamanSurvivor.Runtime
 
             if (experience.ValueRO.PendingLevelUps > 0)
             {
-                GenerateOptions(definitions, progress, unlocked, options, passiveDefinitions, passiveProgress, ref levelUp.ValueRW);
+                GenerateOptions(upgradeDefinitions, upgradeProgress, unlockedAbilities, options, passiveDefinitions, passiveProgress, projectileDefinitions, ref levelUp.ValueRW);
                 
                 return;
             }
@@ -89,42 +111,20 @@ namespace ShamanSurvivor.Runtime
         private bool GenerateOptions(
             DynamicBuffer<UpgradeDefinition> definitions,
             DynamicBuffer<UpgradeProgress> progresses,
-            DynamicBuffer<UnlockedAbility> unlocked, 
+            DynamicBuffer<AbilityState> unlockedAbilities, 
             DynamicBuffer<LevelUpOption> options,
             DynamicBuffer<PassiveDefinition> passiveDefinitions,
             DynamicBuffer<PassiveProgress> passiveProgress,
+            DynamicBuffer<ProjectileAbilityDefinition> abilities,
             ref LevelUpState levelUp)
         {
             options.Clear();
 
             var candidates = new NativeList<Candidate>(definitions.Length + passiveDefinitions.Length, Allocator.Temp);
 
-            for (int i = 0; i < definitions.Length; i++)
-            {
-                UpgradeDefinition definition = definitions[i];
-                
-                if (!IsAbilityUnlocked(unlocked, definition.Ability)) 
-                    continue;
-
-                int picks = GetPicks(progresses, definition.Ability, definition.Key);
-                
-                if (picks >= definition.MaxPicks)
-                    continue;
-                
-                candidates.Add(new Candidate{DefinitionIndex = i, Type = LevelUpOptionType.AbilityUpgrade});
-            }
-
-            for (int i = 0; i < passiveDefinitions.Length; i++)
-            {
-                PassiveDefinition passiveDefinition = passiveDefinitions[i];
-                
-                int picks = GetPicks(passiveProgress, passiveDefinition.Passive);
-                
-                if (picks >= passiveDefinition.MaxPicks)
-                    continue;
-                
-                candidates.Add(new Candidate{DefinitionIndex = i, Type = LevelUpOptionType.GlobalPassive});
-            }
+            AddUpgradesToCandidates(definitions, progresses, unlockedAbilities, candidates);
+            AddPassivesToCandidates(passiveDefinitions, passiveProgress, candidates);
+            AddAbilitiesToCandidates(unlockedAbilities, abilities, candidates);
 
             if (candidates.Length == 0)
             {
@@ -168,6 +168,16 @@ namespace ShamanSurvivor.Runtime
                             MaxPicks =  passiveDefinition.MaxPicks
                         });
                         break;
+                    case LevelUpOptionType.UnlockAbility:
+                        ProjectileAbilityDefinition definition = abilities[candidate.DefinitionIndex];
+                        options.Add(new LevelUpOption
+                        {
+                            Type = LevelUpOptionType.UnlockAbility,
+                            Ability = definition.Ability,
+                            CurrentPicks = 0,
+                            MaxPicks = 1
+                        });
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -179,6 +189,60 @@ namespace ShamanSurvivor.Runtime
             levelUp.Revision++;
 
             return true;
+        }
+
+        private void AddAbilitiesToCandidates(DynamicBuffer<AbilityState> unlockedAbilities, DynamicBuffer<ProjectileAbilityDefinition> abilities, NativeList<Candidate> candidates)
+        {
+            for (int i = 0; i < abilities.Length; i++)
+            {
+                ProjectileAbilityDefinition definition = abilities[i];
+
+                if (IsAbilityUnlocked(unlockedAbilities, definition.Ability))
+                {
+                    continue;
+                }
+
+                candidates.Add(new Candidate
+                {
+                    Type = LevelUpOptionType.UnlockAbility,
+                    DefinitionIndex = i
+                });
+            }
+        }
+
+        private void AddPassivesToCandidates(DynamicBuffer<PassiveDefinition> passiveDefinitions, DynamicBuffer<PassiveProgress> passiveProgress,
+            NativeList<Candidate> candidates)
+        {
+            for (int i = 0; i < passiveDefinitions.Length; i++)
+            {
+                PassiveDefinition passiveDefinition = passiveDefinitions[i];
+                
+                int picks = GetPicks(passiveProgress, passiveDefinition.Passive);
+                
+                if (picks >= passiveDefinition.MaxPicks)
+                    continue;
+                
+                candidates.Add(new Candidate{DefinitionIndex = i, Type = LevelUpOptionType.GlobalPassive});
+            }
+        }
+
+        private void AddUpgradesToCandidates(DynamicBuffer<UpgradeDefinition> definitions, DynamicBuffer<UpgradeProgress> progresses, DynamicBuffer<AbilityState> unlocked,
+            NativeList<Candidate> candidates)
+        {
+            for (int i = 0; i < definitions.Length; i++)
+            {
+                UpgradeDefinition definition = definitions[i];
+                
+                if (!IsAbilityUnlocked(unlocked, definition.Ability)) 
+                    continue;
+
+                int picks = GetPicks(progresses, definition.Ability, definition.Key);
+                
+                if (picks >= definition.MaxPicks)
+                    continue;
+                
+                candidates.Add(new Candidate{DefinitionIndex = i, Type = LevelUpOptionType.AbilityUpgrade});
+            }
         }
 
         private int GetPicks(DynamicBuffer<UpgradeProgress> progresses, AbilityId ability, UpgradeKey key)
@@ -260,11 +324,23 @@ namespace ShamanSurvivor.Runtime
             });
         }
 
-        private bool IsAbilityUnlocked(DynamicBuffer<UnlockedAbility> unlocked, AbilityId definitionAbility)
+        private void UnlockAbility(LevelUpOption selected, DynamicBuffer<AbilityState> abilities)
+        {
+            if (IsAbilityUnlocked(abilities, selected.Ability))
+                return;
+
+            abilities.Add(new AbilityState
+                {
+                    Ability = selected.Ability,
+                    CooldownRemaining = 0f
+                });
+        }
+
+        private bool IsAbilityUnlocked(DynamicBuffer<AbilityState> unlocked, AbilityId definitionAbility)
         {
             foreach (var unlockedAbility in unlocked)
             {
-                if (unlockedAbility.Value == definitionAbility)
+                if (unlockedAbility.Ability == definitionAbility)
                     return true;
             }
 

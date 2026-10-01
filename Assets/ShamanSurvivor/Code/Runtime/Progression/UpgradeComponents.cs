@@ -3,11 +3,6 @@ using Unity.Entities;
 
 namespace ShamanSurvivor.Runtime
 {
-    public struct UnlockedAbility : IBufferElementData
-    {
-        public AbilityId Value;
-    }
-
     [InternalBufferCapacity(8)]
     public struct UpgradeProgress : IBufferElementData
     {

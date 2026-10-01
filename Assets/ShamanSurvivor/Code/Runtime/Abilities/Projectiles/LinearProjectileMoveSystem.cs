@@ -6,8 +6,8 @@ namespace ShamanSurvivor.Runtime
 {
     [BurstCompile]
     [UpdateInGroup(typeof(GameAbilitySystemGroup))]
-    [UpdateAfter(typeof(LightningAbilitySystem))]
-    public partial struct LinearProjectileSystem : ISystem
+    [UpdateAfter(typeof(ProjectileAbilitySystem))]
+    public partial struct LinearProjectileMoveSystem : ISystem
     {
         [BurstCompile]
         public void OnCreate(ref SystemState state)

@@ -62,6 +62,7 @@ namespace ShamanSurvivor.Presentation
                 _description.text = FormatBonus(option.Key, option.Bonus);
             }
 
+            _progress.gameObject.SetActive(true);
             _progress.text = $"{option.CurrentPicks + 1}/{option.MaxPicks}";
 
             SetInteractable(true);
@@ -90,8 +91,37 @@ namespace ShamanSurvivor.Presentation
                 _abilityIcon.enabled = false;
             }
 
+            _progress.gameObject.SetActive(true);
             _progress.text = $"{option.CurrentPicks + 1}/{option.MaxPicks}";
 
+            SetInteractable(true);
+
+            gameObject.SetActive(true);
+        }
+
+        public void BindUnlockAbility(int index, LevelUpOption option, LevelUpCardCatalog catalog, Action<int> onSelected)
+        {
+            _index = index;
+            _onSelected = onSelected;
+
+            if (catalog.TryGetUnlockAbility(option.Ability, out var unlockAbilityVisual))
+            {
+                _abilityName.text = unlockAbilityVisual.DisplayName;
+                _keyName.text = unlockAbilityVisual.DisplayName;
+                _abilityName.color = unlockAbilityVisual.NameColor;
+                _abilityIcon.sprite = unlockAbilityVisual.Icon;
+                _frame.sprite = unlockAbilityVisual.Frame;
+                _abilityIcon.enabled = unlockAbilityVisual.Icon != null;
+                _description.text = string.Format(unlockAbilityVisual.DescriptionFormat, option.Bonus);
+            }
+            else
+            {
+                _abilityName.text = option.Ability.ToString();
+                _abilityIcon.enabled = false;
+            }
+
+            _progress.gameObject.SetActive(false);
+            
             SetInteractable(true);
 
             gameObject.SetActive(true);

@@ -39,10 +39,23 @@ namespace ShamanSurvivor.Configs
             public Sprite Icon;
             public Sprite Frame;
         }
+        
+        [Serializable]
+        public struct UnlockAbilityVisual
+        {
+            public AbilityId Ability;
+            public string DisplayName;
+            public Color NameColor;
+            [TextArea]
+            public string DescriptionFormat;
+            public Sprite Icon;
+            public Sprite Frame;
+        }
 
         [SerializeField] private List<AbilityVisual> _abilities = new();
         [SerializeField] private List<KeyVisual> _keys = new();
         [SerializeField] private List<PassiveVisual> _passiveVisuals = new();
+        [SerializeField] private List<UnlockAbilityVisual> _unlockAbilityVisuals = new();
 
         public bool TryGetAbility(AbilityId ability, out AbilityVisual result)
         {
@@ -85,6 +98,21 @@ namespace ShamanSurvivor.Configs
                 return true;
             }
 
+            result = default;
+            return false;
+        }
+
+        public bool TryGetUnlockAbility(AbilityId ability, out UnlockAbilityVisual result)
+        {
+            for (int i = 0; i < _unlockAbilityVisuals.Count; i++)
+            {
+                if (_unlockAbilityVisuals[i].Ability != ability)
+                    continue;
+                
+                result = _unlockAbilityVisuals[i];
+                return true;
+            }
+            
             result = default;
             return false;
         }
