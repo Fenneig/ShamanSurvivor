@@ -82,9 +82,7 @@ namespace ShamanSurvivor.Runtime
                             continue;
 
                         nearestDistanceSq = distanceSq;
-
                         nearest = entry;
-
                         found = true;
                     } while (grid.TryGetNextValue(out entry, ref iterator));
                 }
@@ -94,58 +92,36 @@ namespace ShamanSurvivor.Runtime
         }
 
         public static void CollectInRadius(NativeParallelMultiHashMap<int2, EnemySpatialEntry>.ReadOnly grid,
-            float2 origin,
-            float radius,
-            ref NativeList<EnemySpatialEntry> results)
+            float2 origin, float radius, ref NativeList<EnemySpatialEntry> results)
         {
             results.Clear();
 
             if (radius < 0f || !grid.IsCreated)
                 return;
 
-            float radiusSq =
-                radius * radius;
+            float radiusSq = radius * radius;
 
-            GetCellBounds(
-                origin,
-                radius,
-                out int2 minCell,
-                out int2 maxCell);
+            GetCellBounds(origin, radius, out int2 minCell, out int2 maxCell);
 
-            for (int y = minCell.y;
-                 y <= maxCell.y;
-                 y++)
+            for (int y = minCell.y; y <= maxCell.y; y++)
             {
-                for (int x = minCell.x;
-                     x <= maxCell.x;
-                     x++)
+                for (int x = minCell.x; x <= maxCell.x; x++)
                 {
-                    int2 cell =
-                        new int2(x, y);
+                    int2 cell = new int2(x, y);
 
-                    if (!grid.TryGetFirstValue(
-                            cell,
-                            out EnemySpatialEntry entry,
-                            out var iterator))
-                    {
+                    if (!grid.TryGetFirstValue(cell, out EnemySpatialEntry entry, out var iterator))
                         continue;
-                    }
 
                     do
                     {
-                        float distanceSq =
-                            math.distancesq(
-                                origin,
-                                entry.Position);
+                        float distanceSq = math.distancesq(origin, entry.Position);
 
                         if (distanceSq > radiusSq)
                             continue;
 
                         results.Add(entry);
                     } while (
-                        grid.TryGetNextValue(
-                            out entry,
-                            ref iterator));
+                        grid.TryGetNextValue(out entry, ref iterator));
                 }
             }
         }
@@ -227,9 +203,7 @@ namespace ShamanSurvivor.Runtime
                     int2 cell = new int2(x, y);
 
                     if (!grid.TryGetFirstValue(cell, out EnemySpatialEntry entry, out var iterator))
-                    {
                         continue;
-                    }
 
                     do
                     {
@@ -247,6 +221,73 @@ namespace ShamanSurvivor.Runtime
                 }
             }
             return hitEntity != Entity.Null;
+        }
+        
+        public static void CollectNearest(NativeParallelMultiHashMap<int2, EnemySpatialEntry>.ReadOnly grid,
+            float2 origin, float range, int maxCount, NativeList<EnemySpatialEntry> results)
+        {
+            results.Clear();
+
+            if (!grid.IsCreated || range <= 0f || maxCount <= 0)
+                return;
+
+            using NativeList<NearestEntry> nearest = new NativeList<NearestEntry>(maxCount, Allocator.Temp);
+            float rangeSq = range * range;
+            GetCellBounds(origin, range, out int2 minCell, out int2 maxCell);
+
+            for (int y = minCell.y; y <= maxCell.y; y++)
+            {
+                for (int x = minCell.x; x <= maxCell.x; x++)
+                {
+                    int2 cell = new int2(x, y);
+
+                    if (!grid.TryGetFirstValue(cell, out EnemySpatialEntry entry, out var iterator))
+                        continue;
+
+                    do
+                    {
+                        float distanceSq = math.distancesq(origin, entry.Position);
+
+                        if (distanceSq > rangeSq)
+                            continue;
+
+                        InsertNearest(entry, distanceSq, maxCount, nearest);
+                    }
+                    while (grid.TryGetNextValue(out entry, ref iterator));
+                }
+            }
+
+            for (int i = 0; i < nearest.Length; i++) 
+                results.Add(nearest[i].Entry);
+        }
+        
+        private static void InsertNearest(EnemySpatialEntry entry, float distanceSq, int maxCount, NativeList<NearestEntry> nearest)
+        {
+            int insertIndex = nearest.Length;
+
+            for (int i = 0; i < nearest.Length; i++)
+            {
+                if (distanceSq < nearest[i].DistanceSq)
+                {
+                    insertIndex = i;
+                    break;
+                }
+            }
+
+            if (insertIndex >= maxCount)
+                return;
+
+            if (nearest.Length < maxCount) 
+                nearest.Add(default);
+
+            for (int i = nearest.Length - 1; i > insertIndex; i--) 
+                nearest[i] = nearest[i - 1];
+
+            nearest[insertIndex] = new NearestEntry
+            {
+                Entry = entry,
+                DistanceSq = distanceSq
+            };
         }
 
         private static bool TrySegmentCircleHit(float2 start, float2 end, float2 center, float radius, out float hitT)
@@ -394,6 +435,12 @@ namespace ShamanSurvivor.Runtime
             float2 radiusVector = new float2(radius);
             minCell = EnemySpatialGrid.PositionToCell(origin - radiusVector);
             maxCell = EnemySpatialGrid.PositionToCell(origin + radiusVector);
+        }
+        
+        private struct NearestEntry
+        {
+            public EnemySpatialEntry Entry;
+            public float DistanceSq;
         }
     }
 }

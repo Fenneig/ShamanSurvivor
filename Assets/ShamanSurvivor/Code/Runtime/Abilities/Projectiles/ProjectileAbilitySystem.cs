@@ -1,5 +1,6 @@
 ﻿using ShamanSurvivor.Shared;
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -56,13 +57,19 @@ namespace ShamanSurvivor.Runtime
                     abilities[i] = ability;
                     continue;
                 }
-                if (!SpatialQuery.TryFindNearest(grid, playerPosition.xy, definition.Range, out EnemySpatialEntry target))
+
+                float quantityBonus = UpgradeProgressUtility.GetBonus(upgrades, definition.Ability, UpgradeKey.Quantity);
+                int projectileCount = 1 + (int)quantityBonus;
+                using NativeList<EnemySpatialEntry> targets = new NativeList<EnemySpatialEntry>(projectileCount, Allocator.Temp);
+                SpatialQuery.CollectNearest(grid, playerPosition.xy, definition.Range, projectileCount, targets);
+                
+                if (targets.Count == 0)
                 {
                     abilities[i] = ability;
                     continue;
                 }
 
-                Fire(player, playerPosition, definition, upgrades, target, ecb, ref state);
+                Fire(player, playerPosition, definition, upgrades, ecb, targets, projectileCount, ref state);
 
                 float frequencyBonus = UpgradeProgressUtility.GetBonus(upgrades, ability.Ability, UpgradeKey.Frequency);
                 ability.CooldownRemaining = definition.AttackInterval / (1f + frequencyBonus);
@@ -73,26 +80,25 @@ namespace ShamanSurvivor.Runtime
         private void Fire(Entity player, 
             float3 playerPosition, 
             in  ProjectileAbilityDefinition definition, 
-            DynamicBuffer<UpgradeProgress> upgrades, 
-            in  EnemySpatialEntry target, 
+            DynamicBuffer<UpgradeProgress> upgrades,
             EntityCommandBuffer ecb,
+            NativeList<EnemySpatialEntry> targets,
+            int projectileCount,
             ref SystemState state)
         {
             LocalTransform projectileTransform = SystemAPI.GetComponent<LocalTransform>(definition.ProjectilePrefab);
             float damageBonus = UpgradeProgressUtility.GetBonus(upgrades, definition.Ability, UpgradeKey.Damage);
-            float quantityBonus = UpgradeProgressUtility.GetBonus(upgrades, definition.Ability, UpgradeKey.Quantity);
             float sizeBonus = UpgradeProgressUtility.GetBonus(upgrades, definition.Ability, UpgradeKey.Size);
             float durationBonus = UpgradeProgressUtility.GetBonus(upgrades, definition.Ability, UpgradeKey.Duration);
             float effectBonus = UpgradeProgressUtility.GetBonus(upgrades, definition.Ability, UpgradeKey.EffectStrength);
-
+            
             projectileTransform.Position = playerPosition;
-            float2 direction = math.normalizesafe(target.Position - playerPosition.xy);
 
-            int projectileCount = 1 + (int)quantityBonus;
             for (int i = 0; i < projectileCount; i++)
             {
                 Entity projectile = ecb.Instantiate(definition.ProjectilePrefab);
                 projectile.Set(ecb, projectileTransform);
+                float2 direction = math.normalizesafe(targets[i % targets.Length].Position - playerPosition.xy);
 
                 ecb.SetComponent(projectile, new Projectile
                 {

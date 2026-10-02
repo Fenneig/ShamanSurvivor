@@ -20,7 +20,7 @@ MonoBehaviour:
   AttackInterval: 2
   ProjectileSpeed: 4
   ProjectileLifetime: 8
-  FlameableDamageMultiplier: 2
+  BurningTargetDamageMultiplier: 1
   ExplosionRadius: 1.5
   BurnDamagePerTick: 2
   BurnTickInterval: 0.5
