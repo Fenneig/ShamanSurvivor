@@ -51,10 +51,10 @@ namespace ShamanSurvivor.Presentation
                 _abilityIcon.enabled = false;
             }
 
-            if (catalog.TryGetKey(option.Key, out var keyVisual))
+            if (catalog.TryGetKey(option.Ability, option.Key, out var keyEntry))
             {
-                _keyName.text = keyVisual.DisplayName;
-                _description.text = string.Format(keyVisual.DescriptionFormat, option.Bonus);
+                _keyName.text = keyEntry.DisplayName;
+                _description.text = string.Format(keyEntry.DescriptionFormat, option.Bonus);
             }
             else
             {
@@ -104,7 +104,7 @@ namespace ShamanSurvivor.Presentation
             _index = index;
             _onSelected = onSelected;
 
-            if (catalog.TryGetUnlockAbility(option.Ability, out var unlockAbilityVisual))
+            if (catalog.TryGetAbility(option.Ability, out var unlockAbilityVisual))
             {
                 _abilityName.text = unlockAbilityVisual.DisplayName;
                 _keyName.text = unlockAbilityVisual.DisplayName;
@@ -112,7 +112,7 @@ namespace ShamanSurvivor.Presentation
                 _abilityIcon.sprite = unlockAbilityVisual.Icon;
                 _frame.sprite = unlockAbilityVisual.Frame;
                 _abilityIcon.enabled = unlockAbilityVisual.Icon != null;
-                _description.text = string.Format(unlockAbilityVisual.DescriptionFormat, option.Bonus);
+                _description.text = string.Format(unlockAbilityVisual.UnlockDescription, option.Bonus);
             }
             else
             {

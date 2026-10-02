@@ -198,7 +198,7 @@ MonoBehaviour:
   _minSpawnRadius: 7
   _maxSpawnRadius: 10
   _maxAlive: 50
-  _randomState: 254
+  _randomState: 880
 --- !u!4 &519844042
 Transform:
   m_ObjectHideFlags: 0
@@ -243,21 +243,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12a2cee18c124e82b8ab398a49524381, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ShamanSurvivor.Runtime::ShamanSurvivor.Code.Runtime.ProgressionAuthoring
-  _config: {fileID: 11400000, guid: c3b391c0780b5c144b2906133d37c00b, type: 2}
-  _randomSeed: 584
-  _upgrades:
-  - Ability: 0
-    Key: 0
-    BonusPerPick: 0.2
-    MaxPicks: 5
-  - Ability: 0
-    Key: 1
-    BonusPerPick: 0.4
-    MaxPicks: 4
-  - Ability: 0
-    Key: 2
-    BonusPerPick: 1
-    MaxPicks: 2
+  _config: {fileID: 11400000, guid: d465576dacab22044b14f14063af8fc8, type: 2}
+  _randomSeed: 1804
 --- !u!4 &1046199478
 Transform:
   m_ObjectHideFlags: 0

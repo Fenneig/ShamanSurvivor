@@ -7,7 +7,8 @@ namespace ShamanSurvivor.Authoring
 {
     public class ProgressionAuthoring : MonoBehaviour
     {
-        [SerializeField] private ProgressionConfig _config;
+        [SerializeField] private LevelUpCardCatalog _config;
+        [SerializeField] private uint _randomSeed;
         
         private class Baker : Baker<ProgressionAuthoring>
         {
@@ -18,7 +19,7 @@ namespace ShamanSurvivor.Authoring
                 AddComponent(entity, new GameFlowState { Phase = GamePhase.Playing });
                 AddComponent(entity, new LevelUpState 
                 {
-                    RandomState = authoring._config.RandomSeed, 
+                    RandomState = authoring._randomSeed, 
                     SelectedIndex = -1,
                     Revision = 0
                 });
@@ -26,15 +27,18 @@ namespace ShamanSurvivor.Authoring
                 
                 DynamicBuffer<UpgradeDefinition> definitions = AddBuffer<UpgradeDefinition>(entity);
 
-                foreach (var entry in authoring._config.Upgrades)
+                foreach (var abilityEntry in authoring._config.Abilities)
                 {
-                    definitions.Add(new UpgradeDefinition
+                    foreach (var keyEntry in abilityEntry.Keys)
                     {
-                        Ability = entry.Ability,
-                        Key = entry.Key,
-                        BonusPerPick = entry.BonusPerPick,
-                        MaxPicks = entry.MaxPicks
-                    });
+                        definitions.Add(new UpgradeDefinition
+                        {
+                            Ability = abilityEntry.Ability,
+                            Key = keyEntry.Key,
+                            BonusPerPick = keyEntry.BonusPerPick,
+                            MaxPicks = keyEntry.MaxPicks
+                        });
+                    }
                 }
                 
                 DynamicBuffer<PassiveDefinition> passiveDefinitions = AddBuffer<PassiveDefinition>(entity);
