@@ -4,6 +4,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
 
 namespace ShamanSurvivor.Runtime
 {
@@ -97,9 +98,14 @@ namespace ShamanSurvivor.Runtime
             for (int i = 0; i < projectileCount; i++)
             {
                 Entity projectile = ecb.Instantiate(definition.ProjectilePrefab);
-                projectile.Set(ecb, projectileTransform);
+                quaternion prefabRotation = SystemAPI.GetComponent<LocalTransform>(definition.ProjectilePrefab).Rotation;
                 float2 direction = math.normalizesafe(targets[i % targets.Length].Position - playerPosition.xy);
-
+                float angle = math.atan2(direction.y, direction.x);
+                quaternion directionRotation = quaternion.RotateZ(angle);
+                projectileTransform.Rotation = math.mul(directionRotation, prefabRotation);
+                
+                projectile.Set(ecb, projectileTransform);
+                
                 ecb.SetComponent(projectile, new Projectile
                 {
                     Source = player,

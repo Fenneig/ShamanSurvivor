@@ -41,7 +41,6 @@ namespace ShamanSurvivor.Runtime
             DynamicBuffer<PassiveDefinition> passiveDefinitions = SystemAPI.GetBuffer<PassiveDefinition>(progressionEntity);
             DynamicBuffer<PassiveProgress> passiveProgress = SystemAPI.GetBuffer<PassiveProgress>(player);
             
-            DynamicBuffer<AbilityState> abilities = SystemAPI.GetBuffer<AbilityState>(player);
             Entity projectileCatalogEntity = SystemAPI.GetSingletonEntity<AbilityCatalogTag>();
             DynamicBuffer<ProjectileAbilityDefinition> projectileDefinitions = SystemAPI.GetBuffer<ProjectileAbilityDefinition>(projectileCatalogEntity);
 
@@ -95,12 +94,8 @@ namespace ShamanSurvivor.Runtime
 
             levelUp.ValueRW.SelectedIndex = -1;
 
-            if (experience.ValueRO.PendingLevelUps > 0)
-            {
-                GenerateOptions(upgradeDefinitions, upgradeProgress, unlockedAbilities, options, passiveDefinitions, passiveProgress, projectileDefinitions, ref levelUp.ValueRW);
-                
+            if (experience.ValueRO.PendingLevelUps > 0 && GenerateOptions(upgradeDefinitions, upgradeProgress, unlockedAbilities, options, passiveDefinitions, passiveProgress, projectileDefinitions, ref levelUp.ValueRW))
                 return;
-            }
             
             options.Clear();
             

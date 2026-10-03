@@ -8,6 +8,7 @@ namespace ShamanSurvivor.Runtime
 {
     [BurstCompile]
     [WithAll(typeof(ProjectileTag))]
+    [WithNone(typeof(ProjectileHitEvent),typeof(PiercingProjectile))]
     public partial struct MoveProjectileJob : IJobEntity
     {
         [ReadOnly] public NativeParallelMultiHashMap<int2, EnemySpatialEntry>.ReadOnly Grid;

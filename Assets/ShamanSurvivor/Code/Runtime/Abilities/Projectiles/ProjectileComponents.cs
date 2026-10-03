@@ -41,4 +41,12 @@ namespace ShamanSurvivor.Runtime
     }
     
     public struct DirectImpact : IComponentData { }
+    
+    public struct PiercingProjectile : IComponentData{ }
+
+    [InternalBufferCapacity(8)]
+    public struct ProjectileHitHistory : IBufferElementData
+    {
+        public Entity Entity;
+    }
 }

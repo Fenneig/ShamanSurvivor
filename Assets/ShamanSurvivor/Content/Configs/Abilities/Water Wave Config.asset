@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84543685bacb40638aa1f56539fe09c9, type: 3}
+  m_Name: Water Wave Config
+  m_EditorClassIdentifier: ShamanSurvivor.Configs::ShamanSurvivor.Configs.WaterWaveConfig
+  Ability: 2
+  ProjectilePrefab: {fileID: 2929988893149068468, guid: a657c8aef5ffcf6478696effc1d89d6b, type: 3}
+  Damage: 1
+  DamageElement: 3
+  Range: 8
+  AttackInterval: 1
+  ProjectileSpeed: 5
+  ProjectileLifetime: 5
+  KnockbackDistance: 1
+  HalfWidth: 0.5
+  HalfDepth: 0.1

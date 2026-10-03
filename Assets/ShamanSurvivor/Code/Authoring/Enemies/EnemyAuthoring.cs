@@ -1,6 +1,7 @@
 ﻿using ShamanSurvivor.Configs;
 using ShamanSurvivor.Runtime;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace ShamanSurvivor.Authoring
@@ -35,6 +36,12 @@ namespace ShamanSurvivor.Authoring
                     TickInterval = 0,
                     TickTimer = 0,
                     RemainingDuration = 0
+                });
+                AddComponent(entity, new ForcedDisplacement
+                {
+                    Direction = float2.zero,
+                    RemainingDistance = 0,
+                    Speed = 0
                 });
             }
         }

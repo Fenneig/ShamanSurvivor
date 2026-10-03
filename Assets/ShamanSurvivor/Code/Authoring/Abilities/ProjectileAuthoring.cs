@@ -33,7 +33,8 @@ namespace ShamanSurvivor.Authoring
                 {
                     SizeMultiplier = 1f,
                     DurationMultiplier = 1f,
-                    EffectStrengthMultiplier = 1f
+                    EffectStrengthMultiplier = 1f,
+                    DamageMultiplier = 1f
                 });
             }
         }

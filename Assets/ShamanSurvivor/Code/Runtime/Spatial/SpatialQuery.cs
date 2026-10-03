@@ -178,9 +178,8 @@ namespace ShamanSurvivor.Runtime
             return correction;
         }
 
-        public static bool TryFindFirstSegmentHit(
-            NativeParallelMultiHashMap<int2, EnemySpatialEntry>.ReadOnly grid, float2 start, float2 end, float radius,
-            out Entity hitEntity)
+        public static bool TryFindFirstSegmentHit(NativeParallelMultiHashMap<int2, EnemySpatialEntry>.ReadOnly grid,
+            float2 start, float2 end, float radius, out Entity hitEntity)
         {
             hitEntity = Entity.Null;
 
@@ -221,6 +220,97 @@ namespace ShamanSurvivor.Runtime
                 }
             }
             return hitEntity != Entity.Null;
+        }
+        
+        public static void CollectSegmentHits(NativeParallelMultiHashMap<int2, EnemySpatialEntry>.ReadOnly grid,
+            float2 start, float2 end, float radius, NativeList<EnemySpatialEntry> results)
+        {
+            results.Clear();
+
+            if (!grid.IsCreated)
+                return;
+
+            float2 radiusVector = new float2(radius);
+            float2 minPosition = math.min(start, end) - radiusVector;
+            float2 maxPosition = math.max(start, end) + radiusVector;
+
+            int2 minCell = EnemySpatialGrid.PositionToCell(minPosition);
+            int2 maxCell = EnemySpatialGrid.PositionToCell(maxPosition);
+
+            minCell -= new int2(1);
+            maxCell += new int2(1);
+
+            for (int y = minCell.y; y <= maxCell.y; y++) 
+            {
+                for (int x = minCell.x; x <= maxCell.x; x++)
+                {
+                    int2 cell = new int2(x, y);
+
+                    if (!grid.TryGetFirstValue(cell, out EnemySpatialEntry entry, out var iterator))
+                        continue;
+
+                    do
+                    {
+                        float combinedRadius = radius + entry.Radius;
+
+                        if (!TrySegmentCircleHit(start, end, entry.Position, combinedRadius, out _))
+                            continue;
+
+                        results.Add(entry);
+                    }
+                    while (grid.TryGetNextValue(out entry, ref iterator));
+                }
+            }
+        }
+
+        public static void CollectSweptEllipseHits(NativeParallelMultiHashMap<int2, EnemySpatialEntry>.ReadOnly grid,
+            float2 start, float2 end, float2 forward, float halfWidth, float halfDepth, NativeList<EnemySpatialEntry> results)
+        {
+            results.Clear();
+
+            if (!grid.IsCreated)
+                return;
+
+            forward = math.normalizesafe(forward, new float2(1f, 0f));
+            float2 right = new float2(-forward.y, forward.x);
+            float travelDistance = math.distance(start, end);
+
+            float2 extents = math.abs(right) * halfWidth + math.abs(forward) * halfDepth;
+            float2 minPosition = math.min(start, end) - extents;
+            float2 maxPosition = math.max(start, end) + extents;
+            int2 minCell = EnemySpatialGrid.PositionToCell(minPosition);
+            int2 maxCell = EnemySpatialGrid.PositionToCell(maxPosition);
+            minCell -= new int2(1);
+            maxCell += new int2(1);
+
+            for (int y = minCell.y; y <= maxCell.y; y++)
+            {
+                for (int x = minCell.x; x <= maxCell.x; x++)
+                {
+                    int2 cell = new int2(x, y);
+
+                    if (!grid.TryGetFirstValue(cell, out EnemySpatialEntry entry, out var iterator))
+                        continue;
+
+                    do
+                    {
+                        float2 relative = entry.Position - start;
+                        float along = math.dot(relative, forward);
+                        float side = math.dot(relative, right);
+
+                        float closestAlong = math.clamp(along, 0f, travelDistance);
+                        float localForward = along - closestAlong;
+                        float effectiveWidth = halfWidth + entry.Radius;
+                        float effectiveDepth = halfDepth + entry.Radius;
+                        float normalized = side * side / (effectiveWidth * effectiveWidth) +
+                                           localForward * localForward / (effectiveDepth * effectiveDepth);
+
+                        if (normalized <= 1f) 
+                            results.Add(entry);
+                        
+                    } while (grid.TryGetNextValue(out entry, ref iterator));
+                }
+            }
         }
         
         public static void CollectNearest(NativeParallelMultiHashMap<int2, EnemySpatialEntry>.ReadOnly grid,
