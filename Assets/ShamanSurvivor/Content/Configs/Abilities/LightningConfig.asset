@@ -20,3 +20,4 @@ MonoBehaviour:
   AttackInterval: 0.65
   ProjectileSpeed: 6
   ProjectileLifetime: 5
+  CanUnlock: 1

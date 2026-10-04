@@ -20,6 +20,7 @@ MonoBehaviour:
   AttackInterval: 1
   ProjectileSpeed: 5
   ProjectileLifetime: 5
+  CanUnlock: 0
   KnockbackDistance: 1
   HalfWidth: 0.5
   HalfDepth: 0.1

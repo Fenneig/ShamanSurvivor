@@ -23,6 +23,10 @@ namespace ShamanSurvivor.Runtime
             var grid = gridSystem.Grid.AsReadOnly();
             NativeList<EnemySpatialEntry> targets = new NativeList<EnemySpatialEntry>(Allocator.Temp);
             
+            ComponentLookup<Dead> deadLookup = SystemAPI.GetComponentLookup<Dead>();
+            ComponentLookup<Health> healthLookup = SystemAPI.GetComponentLookup<Health>(true);
+            BufferLookup<DamageEvent> damageLookup = SystemAPI.GetBufferLookup<DamageEvent>();
+            
             foreach (var (projectile, hit, lavaImpact, snapshot, entity) in 
                      SystemAPI.Query<RefRO<Projectile>, RefRO<ProjectileHitEvent>, RefRO<LavaImpact>, RefRO<ProjectileModifierSnapshot>>().WithEntityAccess())
             {
@@ -54,16 +58,16 @@ namespace ShamanSurvivor.Runtime
                         TickInterval = lavaImpact.ValueRO.BurnTickInterval,
                         TickTimer = wasBurning ? burningComponent.TickTimer : lavaImpact.ValueRO.BurnTickInterval
                     };
-                    
+
                     SystemAPI.SetComponent(target.Entity, burningComponent);
-                    
-                    DynamicBuffer<DamageEvent> damageBuffer = SystemAPI.GetBuffer<DamageEvent>(target.Entity);
-                    damageBuffer.Add(new DamageEvent
-                    {
-                        Amount = finalDamage,
-                        Element =  projectile.ValueRO.Element,
-                        Source = projectile.ValueRO.Source
-                    });
+
+                    DamageUtility.TryAddDamage(target.Entity, ref healthLookup, ref damageLookup, ref deadLookup,
+                        new DamageEvent
+                        {
+                            Amount = finalDamage,
+                            Element = projectile.ValueRO.Element,
+                            Source = projectile.ValueRO.Source
+                        });
                 }
                 
                 ecb.DestroyEntity(entity);

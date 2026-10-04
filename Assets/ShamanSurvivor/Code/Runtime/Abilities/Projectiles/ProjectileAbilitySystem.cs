@@ -4,7 +4,6 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
 namespace ShamanSurvivor.Runtime
 {
@@ -31,7 +30,8 @@ namespace ShamanSurvivor.Runtime
             DynamicBuffer<AbilityState> abilities = SystemAPI.GetBuffer<AbilityState>(player);
             DynamicBuffer<UpgradeProgress> upgrades = SystemAPI.GetBuffer<UpgradeProgress>(player);
             Entity catalogEntity = SystemAPI.GetSingletonEntity<AbilityCatalogTag>();
-            DynamicBuffer<ProjectileAbilityDefinition> definitions = SystemAPI.GetBuffer<ProjectileAbilityDefinition>(catalogEntity);
+            DynamicBuffer<AbilityDefinition> definitions = SystemAPI.GetBuffer<AbilityDefinition>(catalogEntity);
+            DynamicBuffer<ProjectileAbilityDefinition> projectileDefinitions = SystemAPI.GetBuffer<ProjectileAbilityDefinition>(catalogEntity);
 
             EntityCommandBuffer ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>()
                 .CreateCommandBuffer(state.WorldUnmanaged);
@@ -45,15 +45,15 @@ namespace ShamanSurvivor.Runtime
             for (int i = 0; i < abilities.Length; i++)
             {
                 AbilityState ability = abilities[i];
-
+                
+                if (!TryGetProjectileDefinition(projectileDefinitions, ability.Ability, out ProjectileAbilityDefinition projectileDefinition))
+                    continue;
+                if (!TryGetDefinition(definitions, ability.Ability, out AbilityDefinition definition))
+                    continue;
+                
                 ability.CooldownRemaining -= deltaTime;
 
                 if (ability.CooldownRemaining > 0f)
-                {
-                    abilities[i] = ability;
-                    continue;
-                }
-                if (!TryGetDefinition(definitions, ability.Ability, out ProjectileAbilityDefinition definition))
                 {
                     abilities[i] = ability;
                     continue;
@@ -70,7 +70,7 @@ namespace ShamanSurvivor.Runtime
                     continue;
                 }
 
-                Fire(player, playerPosition, definition, upgrades, ecb, targets, projectileCount, ref state);
+                Fire(player, playerPosition, definition, projectileDefinition, upgrades, ecb, targets, projectileCount, ref state);
 
                 float frequencyBonus = UpgradeProgressUtility.GetBonus(upgrades, ability.Ability, UpgradeKey.Frequency);
                 ability.CooldownRemaining = definition.AttackInterval / (1f + frequencyBonus);
@@ -80,14 +80,15 @@ namespace ShamanSurvivor.Runtime
 
         private void Fire(Entity player, 
             float3 playerPosition, 
-            in  ProjectileAbilityDefinition definition, 
+            in AbilityDefinition definition,
+            in  ProjectileAbilityDefinition projectileDefinition, 
             DynamicBuffer<UpgradeProgress> upgrades,
             EntityCommandBuffer ecb,
             NativeList<EnemySpatialEntry> targets,
             int projectileCount,
             ref SystemState state)
         {
-            LocalTransform projectileTransform = SystemAPI.GetComponent<LocalTransform>(definition.ProjectilePrefab);
+            LocalTransform projectileTransform = SystemAPI.GetComponent<LocalTransform>(projectileDefinition.ProjectilePrefab);
             float damageBonus = UpgradeProgressUtility.GetBonus(upgrades, definition.Ability, UpgradeKey.Damage);
             float sizeBonus = UpgradeProgressUtility.GetBonus(upgrades, definition.Ability, UpgradeKey.Size);
             float durationBonus = UpgradeProgressUtility.GetBonus(upgrades, definition.Ability, UpgradeKey.Duration);
@@ -97,8 +98,8 @@ namespace ShamanSurvivor.Runtime
 
             for (int i = 0; i < projectileCount; i++)
             {
-                Entity projectile = ecb.Instantiate(definition.ProjectilePrefab);
-                quaternion prefabRotation = SystemAPI.GetComponent<LocalTransform>(definition.ProjectilePrefab).Rotation;
+                Entity projectile = ecb.Instantiate(projectileDefinition.ProjectilePrefab);
+                quaternion prefabRotation = SystemAPI.GetComponent<LocalTransform>(projectileDefinition.ProjectilePrefab).Rotation;
                 float2 direction = math.normalizesafe(targets[i % targets.Length].Position - playerPosition.xy);
                 float angle = math.atan2(direction.y, direction.x);
                 quaternion directionRotation = quaternion.RotateZ(angle);
@@ -110,9 +111,9 @@ namespace ShamanSurvivor.Runtime
                 {
                     Source = player,
                     Direction = direction,
-                    Speed = definition.ProjectileSpeed,
+                    Speed = projectileDefinition.ProjectileSpeed,
                     Damage = definition.Damage,
-                    RemainingLifetime = definition.ProjectileLifetime,
+                    RemainingLifetime = projectileDefinition.ProjectileLifetime,
                     Element = definition.DamageElement
                 });
 
@@ -126,18 +127,34 @@ namespace ShamanSurvivor.Runtime
             }
         }
 
-        private bool TryGetDefinition(DynamicBuffer<ProjectileAbilityDefinition> definitions, AbilityId abilityAbility, out ProjectileAbilityDefinition projectileAbilityDefinition)
+        private bool TryGetDefinition(DynamicBuffer<AbilityDefinition> definitions, AbilityId ability, out AbilityDefinition abilityDefinition)
         {
-            foreach (var abilityDefinition in definitions)
+            foreach (var definition in definitions)
             {
-                if (abilityDefinition.Ability == abilityAbility)
+                if (definition.Ability == ability)
                 {
-                    projectileAbilityDefinition = abilityDefinition;
+                    abilityDefinition = definition;
                     return true;
                 }
             }
             
-            projectileAbilityDefinition = default;
+            abilityDefinition = default;
+            return false;
+        }
+        
+
+        private bool TryGetProjectileDefinition(DynamicBuffer<ProjectileAbilityDefinition> definitions, AbilityId ability, out ProjectileAbilityDefinition abilityDefinition)
+        {
+            foreach (var definition in definitions)
+            {
+                if (definition.Ability == ability)
+                {
+                    abilityDefinition = definition;
+                    return true;
+                }
+            }
+            
+            abilityDefinition = default;
             return false;
         }
     }

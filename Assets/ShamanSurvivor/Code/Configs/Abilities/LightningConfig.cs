@@ -3,6 +3,6 @@
 namespace ShamanSurvivor.Configs
 {
     [CreateAssetMenu(fileName = "LightningConfig", menuName = "Shaman Survivor/Abilities/Lightning")]
-    public class LightningConfig : AbilityConfig
+    public class LightningConfig : ProjectileAbilityConfig
     { }
 }

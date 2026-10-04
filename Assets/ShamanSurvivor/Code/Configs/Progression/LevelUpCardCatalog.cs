@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using ShamanSurvivor.Shared;
-#if ODIN_INSPECTOR
-using Sirenix.OdinInspector;
-#endif
 using UnityEngine;
 
 namespace ShamanSurvivor.Configs
@@ -11,26 +8,6 @@ namespace ShamanSurvivor.Configs
     [CreateAssetMenu(fileName = "LevelUpCardCatalog", menuName = "Shaman Survivor/UI/Level Up Card Catalog")]
     public sealed class LevelUpCardCatalog : ScriptableObject
     {
-        [Serializable]
-        public struct AbilityEntry
-        {
-            public AbilityId Ability;
-            public string DisplayName;
-            [TextArea] 
-            public string UnlockDescription;
-            public Color NameColor;
-            public Sprite Icon;
-            public Sprite Frame;
-
-            [Tooltip("Может ли способность появляться как карточка разблокировки.")]
-            public bool CanUnlock;
-
-#if ODIN_INSPECTOR
-            [TableList]
-#endif
-            public List<AbilityKeyEntry> Keys;
-        }
-
         [Serializable]
         public struct AbilityKeyEntry
         {
@@ -60,14 +37,14 @@ namespace ShamanSurvivor.Configs
             public int MaxPicks;
         }
 
-        [SerializeField] private List<AbilityEntry> _abilities = new();
+        [SerializeField] private List<AbilityCardConfig> _abilities = new();
         [SerializeField] private List<PassiveEntry> _passives = new();
 
-        public List<AbilityEntry> Abilities => _abilities;
+        public List<AbilityCardConfig> Abilities => _abilities;
 
         public List<PassiveEntry> Passives => _passives;
 
-        public bool TryGetAbility(AbilityId ability, out AbilityEntry result)
+        public bool TryGetAbility(AbilityId ability, out AbilityCardConfig result)
         {
             for (int i = 0; i < _abilities.Count; i++)
             {

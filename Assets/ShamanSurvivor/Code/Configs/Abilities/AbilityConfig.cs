@@ -7,8 +7,6 @@ namespace ShamanSurvivor.Configs
     {
         [Header("Identity")]
         public AbilityId Ability;
-        [Header("Projectile")]
-        public GameObject ProjectilePrefab;
         [Min(0f)]
         public float Damage = 10f;
         public DamageElement DamageElement;
@@ -16,9 +14,7 @@ namespace ShamanSurvivor.Configs
         public float Range = 8f;
         [Min(0.01f)]
         public float AttackInterval = 1f;
-        [Min(0f)]
-        public float ProjectileSpeed = 10f;
-        [Min(0.01f)]
-        public float ProjectileLifetime = 5f;
+        [Tooltip("Может ли способность появляться как карточка разблокировки.")]
+        public bool CanUnlock = true;
     }
 }

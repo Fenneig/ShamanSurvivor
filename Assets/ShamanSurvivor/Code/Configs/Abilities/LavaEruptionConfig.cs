@@ -3,7 +3,7 @@
 namespace ShamanSurvivor.Configs
 {
     [CreateAssetMenu(fileName = "Lava Eruption Config", menuName = "Shaman Survivor/Abilities/Lava Eruption")]
-    public class LavaEruptionConfig : AbilityConfig
+    public class LavaEruptionConfig : ProjectileAbilityConfig
     {
         [Min(1f)] 
         public float BurningTargetDamageMultiplier = 1.5f;

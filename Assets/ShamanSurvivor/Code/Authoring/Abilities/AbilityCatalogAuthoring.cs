@@ -17,22 +17,43 @@ namespace ShamanSurvivor.Authoring
                 
                 AddComponent(entity, new AbilityCatalogTag());
                 
-                DynamicBuffer<ProjectileAbilityDefinition> definitions = AddBuffer<ProjectileAbilityDefinition>(entity);
-
+                DynamicBuffer<AbilityDefinition> abilities = AddBuffer<AbilityDefinition>(entity);
+                DynamicBuffer<ProjectileAbilityDefinition> projectiles = AddBuffer<ProjectileAbilityDefinition>(entity);
+                
                 foreach (var ability in authoring._config.Abilities)
                 {
-                    Entity prefabEntity = GetEntity(ability.ProjectilePrefab, TransformUsageFlags.Dynamic);
-                    definitions.Add(new ProjectileAbilityDefinition
+                    abilities.Add(new AbilityDefinition
                     {
                         Ability = ability.Ability,
                         DamageElement = ability.DamageElement,
                         AttackInterval = ability.AttackInterval,
                         Damage =  ability.Damage,
                         Range = ability.Range,
-                        ProjectileLifetime =  ability.ProjectileLifetime,
-                        ProjectilePrefab = prefabEntity,
-                        ProjectileSpeed = ability.ProjectileSpeed
+                        CanUnlock =  ability.CanUnlock,
                     });
+                    
+                    if (ability is ProjectileAbilityConfig projectileAbility)
+                    {
+                        Entity prefabEntity = GetEntity(projectileAbility.ProjectilePrefab, TransformUsageFlags.Dynamic);
+
+                        projectiles.Add(new ProjectileAbilityDefinition
+                        {
+                            ProjectilePrefab = prefabEntity,
+                            ProjectileLifetime = projectileAbility.ProjectileLifetime,
+                            ProjectileSpeed = projectileAbility.ProjectileSpeed,
+                        });
+                        continue;
+                    }
+
+                    if (ability is ChainLightningConfig chain)
+                    {
+                        AddComponent(entity, new ChainLightningDefinition
+                            {
+                                Ability = chain.Ability,
+                                JumpRange = chain.JumpRange,
+                                BaseJumps = chain.BaseJumps
+                            });
+                    }
                 }
             }
         }

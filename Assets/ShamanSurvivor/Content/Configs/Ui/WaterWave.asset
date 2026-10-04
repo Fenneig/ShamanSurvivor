@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bb37c6eb5fe4e6abc1ce058e682f23a, type: 3}
+  m_Name: WaterWave
+  m_EditorClassIdentifier: ShamanSurvivor.Configs::ShamanSurvivor.Configs.AbilityCardConfig
+  Ability: 2
+  DisplayName: "\u0412\u043E\u043B\u043D\u0430"
+  UnlockDescription: "\u0412\u043E\u043B\u043D\u0430 \u0432\u043E\u0434\u044B \u043D\u0430\u043D\u043E\u0441\u0438\u0442
+    \u0441\u0440\u0435\u0434\u043D\u0438\u0439 <color=#48B9FF>\u0432\u043E\u0434\u044F\u043D\u043D\u043E\u0439</color>
+    \u0443\u0440\u043E\u043D \u0438 \u043E\u0442\u0442\u0430\u043B\u043A\u043A\u0438\u0432\u0430\u0435\u0442
+    \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u043E\u0432 "
+  NameColor: {r: 0.28235295, g: 0.7254902, b: 1, a: 1}
+  Icon: {fileID: 21300000, guid: 0f34eb77fc3c7e64f98a8850b76a0044, type: 3}
+  Frame: {fileID: 21300000, guid: 59f9ea08ae80d8b4e9fd31abc2e40528, type: 3}
+  Keys:
+  - Key: 0
+    DisplayName: "\u0423\u0440\u043E\u043D"
+    DescriptionFormat: "\u0423\u0440\u043E\u043D +{0:P0}"
+    BonusPerPick: 0.2
+    MaxPicks: 5
+  - Key: 1
+    DisplayName: "\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0430\u0442\u0430\u043A\u0438"
+    DescriptionFormat: "\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0430\u0442\u0430\u043A\u0438
+      +{0:P0}"
+    BonusPerPick: 1
+    MaxPicks: 5
+  - Key: 3
+    DisplayName: "\u0420\u0430\u0437\u043C\u0435\u0440"
+    DescriptionFormat: "\u0428\u0438\u0440\u0438\u043D\u0430 \u0432\u043E\u043B\u043D\u044B
+      +{0:P0}"
+    BonusPerPick: 1
+    MaxPicks: 5
+  - Key: 5
+    DisplayName: "\u041E\u0442\u0442\u0430\u043B\u043A\u0438\u0432\u0430\u043D\u0438\u0435"
+    DescriptionFormat: "\u0421\u0438\u043B\u0430 \u043E\u0442\u0430\u043B\u043A\u0438\u0432\u0430\u043D\u0438\u044F
+      +{0:P0}"
+    BonusPerPick: 1
+    MaxPicks: 5

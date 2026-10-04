@@ -4,6 +4,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using ShamanSurvivor.Shared;
+using UnityEngine;
 using Random = Unity.Mathematics.Random;
 
 namespace ShamanSurvivor.Runtime
@@ -41,8 +42,8 @@ namespace ShamanSurvivor.Runtime
             DynamicBuffer<PassiveDefinition> passiveDefinitions = SystemAPI.GetBuffer<PassiveDefinition>(progressionEntity);
             DynamicBuffer<PassiveProgress> passiveProgress = SystemAPI.GetBuffer<PassiveProgress>(player);
             
-            Entity projectileCatalogEntity = SystemAPI.GetSingletonEntity<AbilityCatalogTag>();
-            DynamicBuffer<ProjectileAbilityDefinition> projectileDefinitions = SystemAPI.GetBuffer<ProjectileAbilityDefinition>(projectileCatalogEntity);
+            Entity abilityCatalogEntity = SystemAPI.GetSingletonEntity<AbilityCatalogTag>();
+            DynamicBuffer<AbilityDefinition> abilityDefinitions = SystemAPI.GetBuffer<AbilityDefinition>(abilityCatalogEntity);
 
             if (flow.ValueRO.Phase == GamePhase.Playing)
             {
@@ -56,7 +57,8 @@ namespace ShamanSurvivor.Runtime
                     options, 
                     passiveDefinitions,
                     passiveProgress,
-                    projectileDefinitions, ref levelUp.ValueRW);
+                    abilityDefinitions,
+                    ref levelUp.ValueRW);
                 
                 if (!generated)
                     return;
@@ -84,7 +86,7 @@ namespace ShamanSurvivor.Runtime
                     ApplyPassive(selected, passiveProgress);
                     break;
                 case LevelUpOptionType.UnlockAbility:
-                    UnlockAbility(selected, unlockedAbilities);
+                    UnlockAbility(selected.Ability, unlockedAbilities);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -94,7 +96,7 @@ namespace ShamanSurvivor.Runtime
 
             levelUp.ValueRW.SelectedIndex = -1;
 
-            if (experience.ValueRO.PendingLevelUps > 0 && GenerateOptions(upgradeDefinitions, upgradeProgress, unlockedAbilities, options, passiveDefinitions, passiveProgress, projectileDefinitions, ref levelUp.ValueRW))
+            if (experience.ValueRO.PendingLevelUps > 0 && GenerateOptions(upgradeDefinitions, upgradeProgress, unlockedAbilities, options, passiveDefinitions, passiveProgress, abilityDefinitions, ref levelUp.ValueRW))
                 return;
             
             options.Clear();
@@ -110,7 +112,7 @@ namespace ShamanSurvivor.Runtime
             DynamicBuffer<LevelUpOption> options,
             DynamicBuffer<PassiveDefinition> passiveDefinitions,
             DynamicBuffer<PassiveProgress> passiveProgress,
-            DynamicBuffer<ProjectileAbilityDefinition> abilities,
+            DynamicBuffer<AbilityDefinition> abilities,
             ref LevelUpState levelUp)
         {
             options.Clear();
@@ -164,7 +166,7 @@ namespace ShamanSurvivor.Runtime
                         });
                         break;
                     case LevelUpOptionType.UnlockAbility:
-                        ProjectileAbilityDefinition definition = abilities[candidate.DefinitionIndex];
+                        AbilityDefinition definition = abilities[candidate.DefinitionIndex];
                         options.Add(new LevelUpOption
                         {
                             Type = LevelUpOptionType.UnlockAbility,
@@ -186,16 +188,17 @@ namespace ShamanSurvivor.Runtime
             return true;
         }
 
-        private void AddAbilitiesToCandidates(DynamicBuffer<AbilityState> unlockedAbilities, DynamicBuffer<ProjectileAbilityDefinition> abilities, NativeList<Candidate> candidates)
+        private void AddAbilitiesToCandidates(DynamicBuffer<AbilityState> unlockedAbilities, DynamicBuffer<AbilityDefinition> abilities, NativeList<Candidate> candidates)
         {
             for (int i = 0; i < abilities.Length; i++)
             {
-                ProjectileAbilityDefinition definition = abilities[i];
+                AbilityDefinition definition = abilities[i];
+                
+                if (!definition.CanUnlock)
+                    continue;
 
                 if (IsAbilityUnlocked(unlockedAbilities, definition.Ability))
-                {
                     continue;
-                }
 
                 candidates.Add(new Candidate
                 {
@@ -221,7 +224,9 @@ namespace ShamanSurvivor.Runtime
             }
         }
 
-        private void AddUpgradesToCandidates(DynamicBuffer<UpgradeDefinition> definitions, DynamicBuffer<UpgradeProgress> progresses, DynamicBuffer<AbilityState> unlocked,
+        private void AddUpgradesToCandidates(DynamicBuffer<UpgradeDefinition> definitions,
+            DynamicBuffer<UpgradeProgress> progresses, 
+            DynamicBuffer<AbilityState> unlocked,
             NativeList<Candidate> candidates)
         {
             for (int i = 0; i < definitions.Length; i++)
@@ -319,14 +324,14 @@ namespace ShamanSurvivor.Runtime
             });
         }
 
-        private void UnlockAbility(LevelUpOption selected, DynamicBuffer<AbilityState> abilities)
+        private void UnlockAbility(AbilityId ability, DynamicBuffer<AbilityState> abilities)
         {
-            if (IsAbilityUnlocked(abilities, selected.Ability))
+            if (IsAbilityUnlocked(abilities, ability))
                 return;
 
             abilities.Add(new AbilityState
                 {
-                    Ability = selected.Ability,
+                    Ability = ability,
                     CooldownRemaining = 0f
                 });
         }

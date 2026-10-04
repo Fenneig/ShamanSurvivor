@@ -19,9 +19,13 @@ namespace ShamanSurvivor.Runtime
             var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
 
             SystemHandle gridHandle = state.WorldUnmanaged.GetExistingUnmanagedSystem<EnemySpatialGridSystem>();
-            ref EnemySpatialGridSystem gridSystem =
-                ref state.WorldUnmanaged.GetUnsafeSystemRef<EnemySpatialGridSystem>(gridHandle);
+            ref EnemySpatialGridSystem gridSystem = ref state.WorldUnmanaged.GetUnsafeSystemRef<EnemySpatialGridSystem>(gridHandle);
 
+            ComponentLookup<Dead> deadLookup = SystemAPI.GetComponentLookup<Dead>();
+            ComponentLookup<Health> healthLookup = SystemAPI.GetComponentLookup<Health>(true);
+            BufferLookup<DamageEvent> damageLookup = SystemAPI.GetBufferLookup<DamageEvent>();
+            
+            
             gridSystem.BuildHandle.Complete();
 
             var grid = gridSystem.Grid.AsReadOnly();
@@ -75,14 +79,13 @@ namespace ShamanSurvivor.Runtime
 
                     float damage = projectile.ValueRO.Damage * snapshot.ValueRO.DamageMultiplier;
 
-                    DynamicBuffer<DamageEvent> damageBuffer = SystemAPI.GetBuffer<DamageEvent>(target.Entity);
-
-                    damageBuffer.Add(new DamageEvent
-                    {
-                        Source = projectile.ValueRO.Source,
-                        Amount = damage,
-                        Element = projectile.ValueRO.Element
-                    });
+                    DamageUtility.TryAddDamage(target.Entity, ref healthLookup, ref damageLookup, ref deadLookup,
+                        new DamageEvent
+                        {
+                            Source = projectile.ValueRO.Source,
+                            Amount = damage,
+                            Element = projectile.ValueRO.Element
+                        });
 
                     if (SystemAPI.HasComponent<ForcedDisplacement>(target.Entity))
                     {

@@ -57,7 +57,6 @@ namespace ShamanSurvivor.Runtime
                 return false;
 
             float nearestDistanceSq = range * range;
-
             bool found = false;
 
             GetCellBounds(origin, range, out int2 minCell, out int2 maxCell);
@@ -70,7 +69,6 @@ namespace ShamanSurvivor.Runtime
 
                     if (!grid.TryGetFirstValue(cell, out EnemySpatialEntry entry, out var iterator))
                         continue;
-
                     do
                     {
                         if (entry.Entity == excludedEntity)
@@ -87,7 +85,6 @@ namespace ShamanSurvivor.Runtime
                     } while (grid.TryGetNextValue(out entry, ref iterator));
                 }
             }
-
             return found;
         }
 
@@ -456,7 +453,7 @@ namespace ShamanSurvivor.Runtime
 
                     do
                     {
-                        if (!CanReceiveDamage(entry.Entity, healthLookup, damageLookup))
+                        if (!CombatTargetQuery.CanReceiveDamage(entry.Entity, healthLookup, damageLookup))
                             continue;
 
                         float combinedRadius = projectileRadius + entry.Radius;
@@ -475,35 +472,6 @@ namespace ShamanSurvivor.Runtime
             }
 
             return hitEntity != Entity.Null;
-        }
-
-        private static bool CanReceiveDamage(Entity entity, ComponentLookup<Health> healthLookup, BufferLookup<DamageEvent> damageLookup)
-        {
-            if (!healthLookup.HasComponent(entity))
-                return false;
-
-            if (!damageLookup.HasBuffer(entity))
-                return false;
-            
-            float effectiveHealth = healthLookup[entity].Current;
-
-            if (effectiveHealth <= 0)
-                return false;
-            
-            DynamicBuffer<DamageEvent> pendingDamage= damageLookup[entity];
-
-            foreach (var damageEvent in pendingDamage)
-            {
-                if (damageEvent.Amount < 0f)
-                    continue;
-                
-                effectiveHealth -= damageEvent.Amount;
-
-                if (effectiveHealth <= 0f)
-                    return false;
-            }
-
-            return true;
         }
 
         private static float2 GetOverlapDirection(Entity first, Entity second)

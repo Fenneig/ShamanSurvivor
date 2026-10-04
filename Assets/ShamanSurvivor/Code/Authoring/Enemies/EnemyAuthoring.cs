@@ -43,6 +43,8 @@ namespace ShamanSurvivor.Authoring
                     RemainingDistance = 0,
                     Speed = 0
                 });
+                AddComponent<Dead>(entity);
+                SetComponentEnabled<Dead>(entity, false);
             }
         }
     }

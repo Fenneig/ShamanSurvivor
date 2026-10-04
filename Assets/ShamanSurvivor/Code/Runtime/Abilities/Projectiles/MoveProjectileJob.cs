@@ -37,8 +37,7 @@ namespace ShamanSurvivor.Runtime
             float2 start = transform.Position.xy;
             float2 end = start + projectile.Direction * projectile.Speed * DeltaTime;
             bool hit = SpatialQuery.TryFindFirstDamageableHit(Grid, start, end, body.HitRadius, HealthLookup, DamageBufferLookup, out float hitT ,out Entity hitEntity);
-
-            if (hit)
+            if (hit) 
             {
                 float2 hitPosition = math.lerp(start, end, hitT);
 

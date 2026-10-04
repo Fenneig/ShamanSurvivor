@@ -15,4 +15,4 @@ MonoBehaviour:
   MoveSpeed: 5
   HitRadius: 0.4
   MaxHealth: 100
-  FirstLevelExperience: 5
+  FirstLevelExperience: 3
