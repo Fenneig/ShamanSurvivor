@@ -4,6 +4,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
 
 namespace ShamanSurvivor.Runtime
 {
@@ -15,7 +16,6 @@ namespace ShamanSurvivor.Runtime
         {
             state.RequireForUpdate<PlayerTag>();
             state.RequireForUpdate<ChainLightningDefinition>();
-            state.RequireForUpdate<EnemySpatialGridSystem>();
         }
 
         [BurstCompile]
@@ -54,7 +54,6 @@ namespace ShamanSurvivor.Runtime
             
             float finalDamage = definition.Damage * (1f + damageBonus);
             int jumpCount = chainLightningDefinition.BaseJumps + (int)quantityBonus;
-            float attackInterval = definition.AttackInterval / (1f + frequencyBonus);
             
             LocalTransform playerTransform = SystemAPI.GetComponent<LocalTransform>(player);
             SystemHandle gridHandle = state.WorldUnmanaged.GetExistingUnmanagedSystem<EnemySpatialGridSystem>();
@@ -102,8 +101,10 @@ namespace ShamanSurvivor.Runtime
                 if (!CombatTargetQuery.TryFindNearestDamageable(grid, currentOrigin, chainLightningDefinition.JumpRange, healthLookup, damageLookup, hitEntities, out currentTarget))
                     break;
             }
-
-            ability.CooldownRemaining = attackInterval;
+            
+            float cooldownDuration = definition.AttackInterval / (1f + frequencyBonus);
+            ability.CooldownRemaining = cooldownDuration;
+            ability.CooldownDuration = cooldownDuration;
             unlockedAbilities[abilityIndex] = ability;
         }
 

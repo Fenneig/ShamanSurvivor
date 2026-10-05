@@ -73,7 +73,9 @@ namespace ShamanSurvivor.Runtime
                 Fire(player, playerPosition, definition, projectileDefinition, upgrades, ecb, targets, projectileCount, ref state);
 
                 float frequencyBonus = UpgradeProgressUtility.GetBonus(upgrades, ability.Ability, UpgradeKey.Frequency);
-                ability.CooldownRemaining = definition.AttackInterval / (1f + frequencyBonus);
+                float cooldownDuration = definition.AttackInterval / (1f + frequencyBonus);
+                ability.CooldownRemaining = cooldownDuration;
+                ability.CooldownDuration = cooldownDuration;
                 abilities[i] = ability;
             }
         }

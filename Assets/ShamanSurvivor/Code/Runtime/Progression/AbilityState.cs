@@ -8,5 +8,6 @@ namespace ShamanSurvivor.Runtime
         public AbilityId Ability;
 
         public float CooldownRemaining;
+        public float CooldownDuration;
     }
 }
