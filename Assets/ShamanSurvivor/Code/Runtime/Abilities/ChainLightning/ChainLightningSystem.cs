@@ -40,6 +40,13 @@ namespace ShamanSurvivor.Runtime
 
                 return;
             }
+            
+            bool hasPresentationQueue = SystemAPI.TryGetSingletonEntity<PresentationEventQueueTag>(out Entity presentationEntity);
+
+            DynamicBuffer<ChainLightningVisualEvent> visualEvents = default;
+
+            if (hasPresentationQueue) 
+                visualEvents = SystemAPI.GetBuffer<ChainLightningVisualEvent>(presentationEntity);
 
             DynamicBuffer<AbilityDefinition> abilities = SystemAPI.GetBuffer<AbilityDefinition>(player);
             
@@ -83,6 +90,17 @@ namespace ShamanSurvivor.Runtime
 
                 if (!damageLookup.HasBuffer(target))
                     break;
+                
+                float2 hitPosition = currentTarget.Position;
+                if (hasPresentationQueue)
+                {
+                    visualEvents.Add(new ChainLightningVisualEvent
+                    {
+                        From = currentOrigin,
+                        To = hitPosition,
+                        StepIndex = hitIndex
+                    });
+                }
                 
                 DamageUtility.TryAddDamage(target, ref healthLookup, ref damageLookup, ref deadLookup,
                     new DamageEvent

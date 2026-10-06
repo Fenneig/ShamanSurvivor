@@ -15,8 +15,8 @@ MonoBehaviour:
   Ability: 3
   Damage: 10
   DamageElement: 1
-  Range: 8
+  Range: 4
   AttackInterval: 1
   CanUnlock: 1
-  JumpRange: 4
+  JumpRange: 2
   BaseJumps: 2
