@@ -12,9 +12,8 @@ namespace ShamanSurvivor.Runtime
     public partial struct MoveProjectileJob : IJobEntity
     {
         [ReadOnly] public NativeParallelMultiHashMap<int2, EnemySpatialEntry>.ReadOnly Grid;
-        [ReadOnly] public ComponentLookup<Health> HealthLookup;
+        [ReadOnly] public ComponentLookup<Dead> DeadLookup;
 
-        public BufferLookup<DamageEvent> DamageBufferLookup;
         public EntityCommandBuffer ECB;
 
         public float DeltaTime;
@@ -36,7 +35,7 @@ namespace ShamanSurvivor.Runtime
 
             float2 start = transform.Position.xy;
             float2 end = start + projectile.Direction * projectile.Speed * DeltaTime;
-            bool hit = SpatialQuery.TryFindFirstDamageableHit(Grid, start, end, body.HitRadius, HealthLookup, DamageBufferLookup, out float hitT ,out Entity hitEntity);
+            bool hit = SpatialQuery.TryFindFirstDamageableHit(Grid, start, end, body.HitRadius, DeadLookup, out float hitT ,out Entity hitEntity);
             if (hit) 
             {
                 float2 hitPosition = math.lerp(start, end, hitT);

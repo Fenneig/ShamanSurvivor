@@ -1,4 +1,8 @@
-﻿using ShamanSurvivor.Runtime;
+﻿using System;
+using System.Collections.Generic;
+using ShamanSurvivor.Configs;
+using ShamanSurvivor.Runtime;
+using ShamanSurvivor.Shared;
 using TMPro;
 using Unity.Entities;
 using UnityEngine;
@@ -16,11 +20,11 @@ namespace ShamanSurvivor.Presentation
         [SerializeField] private Image _experienceFill;
 
         [SerializeField] private TMP_Text _experienceText;
-        /*[Header("Abilities")] [SerializeField] private Transform _abilityContainer;
-        [SerializeField] private AbilityHudSlot _abilitySlotPrefab;
+        [Header("Abilities")]
+        [SerializeField] private AbilityHudSlot[] _abilityHudSlots;
         [SerializeField] private LevelUpCardCatalog _cardCatalog;
         private readonly Dictionary<AbilityId, AbilityHudSlot> _abilitySlots = new();
-        */
+        
 
         private World _world;
         private EntityManager _entityManager;
@@ -38,7 +42,7 @@ namespace ShamanSurvivor.Presentation
 
             UpdateHealth();
             UpdateExperience();
-            //UpdateAbilities();
+            UpdateAbilities();
         }
 
         private bool TryInitializeEcs()
@@ -98,8 +102,7 @@ namespace ShamanSurvivor.Presentation
 
             _healthText.text = $"{current} / {max}";
         }
-
-
+        
         private void UpdateExperience()
         {
             PlayerExperience experience = _entityManager.GetComponentData<PlayerExperience>(_playerEntity);
@@ -113,9 +116,7 @@ namespace ShamanSurvivor.Presentation
                 _experienceText.text = $"{experience.Current} / {experience.Required}";
             }
         }
-
-
-        /*
+        
         private void UpdateAbilities()
         {
             DynamicBuffer<AbilityState> abilities = _entityManager.GetBuffer<AbilityState>(_playerEntity, true);
@@ -123,29 +124,39 @@ namespace ShamanSurvivor.Presentation
             for (int i = 0; i < abilities.Length; i++)
             {
                 AbilityState ability = abilities[i];
-                AbilityHudSlot slot = GetOrCreateAbilitySlot(ability.Ability);
+                AbilityHudSlot slot = GetOrBindAbilitySlot(ability.Ability);
                 slot.SetCooldown(ability.CooldownRemaining, ability.CooldownDuration);
             }
         }
 
 
-        private AbilityHudSlot GetOrCreateAbilitySlot(AbilityId ability)
+        private AbilityHudSlot GetOrBindAbilitySlot(AbilityId ability)
         {
             if (_abilitySlots.TryGetValue(ability, out AbilityHudSlot slot))
                 return slot;
 
-            slot = Instantiate(_abilitySlotPrefab, _abilityContainer);
-
             Sprite icon = null;
+            
+            for (int i = 0; i < _abilityHudSlots.Length; i++)
+            {
+                if (_abilityHudSlots[i].Inited)
+                    continue;
+
+                slot = _abilityHudSlots[i];
+                break;
+            }
+            
+            if (slot == null)
+                throw new Exception("Not enough ability slots");
 
             if (_cardCatalog != null && _cardCatalog.TryGetAbility(ability, out var entry))
                 icon = entry.Icon;
 
-            slot.Bind(ability, icon);
+            slot.Bind(icon);
 
             _abilitySlots.Add(ability, slot);
 
             return slot;
-        }*/
+        }
     }
 }

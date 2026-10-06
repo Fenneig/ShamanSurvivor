@@ -9,9 +9,14 @@ namespace ShamanSurvivor.Runtime
     {
         public void OnUpdate(ref SystemState state)
         {
+            state.Dependency.Complete();
             float deltaTime = SystemAPI.Time.DeltaTime;
             
-            foreach (var (damageEvent, burning) in SystemAPI.Query<DynamicBuffer<DamageEvent>, RefRW<Burning>>())
+            var healthLookup = state.GetComponentLookup<Health>();
+            var damageLookup = state.GetBufferLookup<DamageEvent>();
+            var deadLookup = state.GetComponentLookup<Dead>();
+            
+            foreach (var (burning, entity) in SystemAPI.Query<RefRW<Burning>>().WithEntityAccess())
             {
                 if (burning.ValueRO.RemainingDuration <= 0)
                     continue;
@@ -23,12 +28,14 @@ namespace ShamanSurvivor.Runtime
                     continue;
 
                 burning.ValueRW.TickTimer = burning.ValueRO.TickInterval;
-                damageEvent.Add(new DamageEvent
-                {
-                    Source = burning.ValueRO.Source,
-                    Amount = burning.ValueRO.DamagePerTick,
-                    Element = DamageElement.Fire
-                });
+                                
+                DamageUtility.TryAddDamage(entity, ref healthLookup, ref damageLookup, ref deadLookup,
+                    new DamageEvent
+                    {
+                        Source = burning.ValueRO.Source,
+                        Amount = burning.ValueRO.DamagePerTick,
+                        Element = DamageElement.Fire
+                    });
             }
         }
     }

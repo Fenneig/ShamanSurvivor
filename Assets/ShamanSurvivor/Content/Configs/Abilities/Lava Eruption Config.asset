@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Lava Eruption Config
   m_EditorClassIdentifier: ShamanSurvivor.Configs::ShamanSurvivor.Configs.LavaEruptionConfig
   Ability: 1
-  ProjectilePrefab: {fileID: 2929988893149068468, guid: 816c0b7b979a55541affaade6e9a3ab2, type: 3}
   Damage: 3
   DamageElement: 2
   Range: 8
   AttackInterval: 2
+  CanUnlock: 1
+  ProjectilePrefab: {fileID: 2929988893149068468, guid: 816c0b7b979a55541affaade6e9a3ab2, type: 3}
   ProjectileSpeed: 4
   ProjectileLifetime: 8
-  CanUnlock: 0
   BurningTargetDamageMultiplier: 1
   ExplosionRadius: 1.5
   BurnDamagePerTick: 2

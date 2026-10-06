@@ -38,6 +38,7 @@ namespace ShamanSurvivor.Authoring
 
                         projectiles.Add(new ProjectileAbilityDefinition
                         {
+                            Ability = ability.Ability,
                             ProjectilePrefab = prefabEntity,
                             ProjectileLifetime = projectileAbility.ProjectileLifetime,
                             ProjectileSpeed = projectileAbility.ProjectileSpeed,

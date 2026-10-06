@@ -21,23 +21,21 @@ namespace ShamanSurvivor.Runtime
         {
             SystemHandle gridHandle = state.WorldUnmanaged.GetExistingUnmanagedSystem<EnemySpatialGridSystem>();
             ref EnemySpatialGridSystem gridSystem = ref state.WorldUnmanaged.GetUnsafeSystemRef<EnemySpatialGridSystem>(gridHandle);
-            BufferLookup<DamageEvent> damageBufferLookup = SystemAPI.GetBufferLookup<DamageEvent>();
-            ComponentLookup<Health> healthLookup = SystemAPI.GetComponentLookup<Health>();
+            ComponentLookup<Dead> deadLookup = SystemAPI.GetComponentLookup<Dead>();
             EntityCommandBuffer ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             JobHandle dependency = JobHandle.CombineDependencies(state.Dependency, gridSystem.BuildHandle);
 
             var job = new MoveProjectileJob
             {
-                    Grid = gridSystem.Grid.AsReadOnly(),
-                    DamageBufferLookup = damageBufferLookup,
-                    ECB = ecb,
-                    DeltaTime = SystemAPI.Time.DeltaTime,
-                    HealthLookup = healthLookup
-                };
+                Grid = gridSystem.Grid.AsReadOnly(),
+                ECB = ecb,
+                DeltaTime = SystemAPI.Time.DeltaTime,
+                DeadLookup = deadLookup
+            };
 
             JobHandle handle = job.Schedule(dependency);
-            state.Dependency = handle;
             gridSystem.RegisterReader(handle);
+            state.Dependency = handle;
         }
     }
 }

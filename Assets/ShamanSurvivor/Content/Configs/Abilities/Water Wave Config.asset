@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Water Wave Config
   m_EditorClassIdentifier: ShamanSurvivor.Configs::ShamanSurvivor.Configs.WaterWaveConfig
   Ability: 2
-  ProjectilePrefab: {fileID: 2929988893149068468, guid: a657c8aef5ffcf6478696effc1d89d6b, type: 3}
   Damage: 1
   DamageElement: 3
   Range: 8
   AttackInterval: 1
+  CanUnlock: 1
+  ProjectilePrefab: {fileID: 2929988893149068468, guid: a657c8aef5ffcf6478696effc1d89d6b, type: 3}
   ProjectileSpeed: 5
   ProjectileLifetime: 5
-  CanUnlock: 0
   KnockbackDistance: 1
   HalfWidth: 0.5
   HalfDepth: 0.1
