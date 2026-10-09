@@ -17,6 +17,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 492851f9aa1e4a54bb375d8ed0544df4, type: 2}
   - {fileID: 11400000, guid: 18fc0c7d6f8b65248bb0d6b5b04fb6c2, type: 2}
   - {fileID: 11400000, guid: bd26946b1ac700c4ea36124300a7150b, type: 2}
+  - {fileID: 11400000, guid: 436daa1f56ef38a47b22bab7c8f1f6f3, type: 2}
   _passives:
   - Passive: 0
     DisplayName: "\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0434\u0432\u0438\u0436\u0435\u043D\u0438\u044F"

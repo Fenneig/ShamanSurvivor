@@ -7,7 +7,8 @@ namespace ShamanSurvivor.Runtime
     public static class CombatTargetQuery
     {
         public static bool TryFindNearestDamageable(NativeParallelMultiHashMap<int2, EnemySpatialEntry>.ReadOnly grid,
-            float2 origin, float range, ComponentLookup<Health> healthLookup, BufferLookup<DamageEvent> damageLookup, in FixedList128Bytes<Entity> excluded, out EnemySpatialEntry result)
+            float2 origin, float range, ComponentLookup<Dead> deadLookup, in FixedList128Bytes<Entity> excluded, out EnemySpatialEntry result)
+        //ComponentLookup<Health> healthLookup, BufferLookup<DamageEvent> damageLookup
         {
             result = default;
 
@@ -33,11 +34,16 @@ namespace ShamanSurvivor.Runtime
 
                     do
                     {
+                        if (deadLookup.HasComponent(entry.Entity) && deadLookup.IsComponentEnabled(entry.Entity))
+                            continue;
+                        
                         if (Contains(excluded, entry.Entity))
                             continue;
 
+                        /*
                         if (!CanReceiveDamage(entry.Entity, healthLookup, damageLookup))
                             continue;
+                            */
 
                         float distanceSq = math.distancesq(origin, entry.Position);
 

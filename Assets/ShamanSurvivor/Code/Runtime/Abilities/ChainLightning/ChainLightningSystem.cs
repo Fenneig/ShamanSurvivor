@@ -25,7 +25,7 @@ namespace ShamanSurvivor.Runtime
 
             DynamicBuffer<AbilityState> unlockedAbilities = SystemAPI.GetBuffer<AbilityState>(player);
 
-            int abilityIndex = FindAbility(unlockedAbilities, AbilityId.ChainLightning);
+            int abilityIndex = SearchAbilityUtility.FindAbilityIndex(unlockedAbilities, AbilityId.ChainLightning);
 
             if (abilityIndex < 0)
                 return;
@@ -50,7 +50,7 @@ namespace ShamanSurvivor.Runtime
 
             DynamicBuffer<AbilityDefinition> abilities = SystemAPI.GetBuffer<AbilityDefinition>(player);
             
-            AbilityDefinition definition = FindAbility(abilities, AbilityId.ChainLightning);
+            AbilityDefinition definition = SearchAbilityUtility.FindAbilityDefinition(abilities, AbilityId.ChainLightning);
             ChainLightningDefinition chainLightningDefinition = SystemAPI.GetComponent<ChainLightningDefinition>(player);
 
             DynamicBuffer<UpgradeProgress> upgrades = SystemAPI.GetBuffer<UpgradeProgress>(player);
@@ -74,7 +74,7 @@ namespace ShamanSurvivor.Runtime
             FixedList128Bytes<Entity> hitEntities = default;
             float2 currentOrigin = playerTransform.Position.xy;
 
-            if (!CombatTargetQuery.TryFindNearestDamageable(grid, currentOrigin, definition.Range, healthLookup, damageLookup, hitEntities, out EnemySpatialEntry currentTarget))
+            if (!CombatTargetQuery.TryFindNearestDamageable(grid, currentOrigin, definition.Range, deadLookup, hitEntities, out EnemySpatialEntry currentTarget))
             {
                 ability.CooldownRemaining = 0f;
                 unlockedAbilities[abilityIndex] = ability;
@@ -116,7 +116,7 @@ namespace ShamanSurvivor.Runtime
                 if (hitIndex + 1 >= maxHits)
                     break;
 
-                if (!CombatTargetQuery.TryFindNearestDamageable(grid, currentOrigin, chainLightningDefinition.JumpRange, healthLookup, damageLookup, hitEntities, out currentTarget))
+                if (!CombatTargetQuery.TryFindNearestDamageable(grid, currentOrigin, chainLightningDefinition.JumpRange, deadLookup, hitEntities, out currentTarget))
                     break;
             }
             
@@ -126,22 +126,6 @@ namespace ShamanSurvivor.Runtime
             unlockedAbilities[abilityIndex] = ability;
         }
 
-        private int FindAbility(DynamicBuffer<AbilityState> abilities, AbilityId ability)
-        {
-            for (int i = 0; i < abilities.Length; i++)
-                if (abilities[i].Ability == ability)
-                    return i;
 
-            return -1;
-        }
-        
-        private AbilityDefinition FindAbility(DynamicBuffer<AbilityDefinition> abilities, AbilityId ability)
-        {
-            for (int i = 0; i < abilities.Length; i++)
-                if (abilities[i].Ability == ability)
-                    return abilities[i];
-
-            return default;
-        }
     }
 }

@@ -45,6 +45,7 @@ namespace ShamanSurvivor.Authoring
                 });
                 AddComponent<Dead>(entity);
                 SetComponentEnabled<Dead>(entity, false);
+                AddBuffer<Slow>(entity);
             }
         }
     }

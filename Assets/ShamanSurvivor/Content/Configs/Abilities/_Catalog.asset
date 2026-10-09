@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: _Catalog
   m_EditorClassIdentifier: ShamanSurvivor.Configs::ShamanSurvivor.Configs.ProjectileAbilityCatalogConfig
   Abilities:
+  - {fileID: 11400000, guid: 3eb7b8f8687c05e41a7adc66d0bb25f5, type: 2}
   - {fileID: 11400000, guid: 1038ebc559897ac4eb59e2544f40f429, type: 2}
   - {fileID: 11400000, guid: abffc3373d47c6a4a917615d67947d28, type: 2}
   - {fileID: 11400000, guid: d6fb15a7f9aa3914090e34968b8f6567, type: 2}

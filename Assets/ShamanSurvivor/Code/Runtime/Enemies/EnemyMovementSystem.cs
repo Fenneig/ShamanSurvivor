@@ -21,9 +21,7 @@ namespace ShamanSurvivor.Runtime
         public void OnUpdate(ref SystemState state)
         {
             Entity playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
-            
             float3 playerPosition = SystemAPI.GetComponent<LocalTransform>(playerEntity).Position;
-            
             HitRadius playerHitRadius = SystemAPI.GetComponent<HitRadius>(playerEntity);
 
             var job = new MoveEnemiesJob

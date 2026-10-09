@@ -55,6 +55,18 @@ namespace ShamanSurvivor.Authoring
                                 BaseJumps = chain.BaseJumps
                             });
                     }
+                    
+                    if (ability is EarthquakeConfig earthquake)
+                    {
+                        AddComponent(entity, new EarthquakeDefinition
+                        {
+                            Ability = earthquake.Ability,
+                            Radius = earthquake.Radius,
+                            Duration = earthquake.Duration,
+                            TickInterval = earthquake.TickInterval,
+                            SlowAmount = earthquake.SlowAmount
+                        });
+                    }
                 }
             }
         }

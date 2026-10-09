@@ -12,9 +12,9 @@ namespace ShamanSurvivor.Runtime
             state.Dependency.Complete();
             float deltaTime = SystemAPI.Time.DeltaTime;
             
-            var healthLookup = state.GetComponentLookup<Health>();
-            var damageLookup = state.GetBufferLookup<DamageEvent>();
-            var deadLookup = state.GetComponentLookup<Dead>();
+            var healthLookup = SystemAPI.GetComponentLookup<Health>();
+            var damageLookup = SystemAPI.GetBufferLookup<DamageEvent>();
+            var deadLookup = SystemAPI.GetComponentLookup<Dead>();
             
             foreach (var (burning, entity) in SystemAPI.Query<RefRW<Burning>>().WithEntityAccess())
             {

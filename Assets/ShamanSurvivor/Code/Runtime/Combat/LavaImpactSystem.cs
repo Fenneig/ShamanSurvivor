@@ -21,7 +21,7 @@ namespace ShamanSurvivor.Runtime
             ref EnemySpatialGridSystem gridSystem = ref state.WorldUnmanaged.GetUnsafeSystemRef<EnemySpatialGridSystem>(gridHandle);
             gridSystem.BuildHandle.Complete();
             var grid = gridSystem.Grid.AsReadOnly();
-            NativeList<EnemySpatialEntry> targets = new NativeList<EnemySpatialEntry>(Allocator.Temp);
+            using NativeList<EnemySpatialEntry> targets = new NativeList<EnemySpatialEntry>(Allocator.Temp);
             
             ComponentLookup<Dead> deadLookup = SystemAPI.GetComponentLookup<Dead>();
             ComponentLookup<Health> healthLookup = SystemAPI.GetComponentLookup<Health>(true);
@@ -30,9 +30,8 @@ namespace ShamanSurvivor.Runtime
             foreach (var (projectile, hit, lavaImpact, snapshot, entity) in 
                      SystemAPI.Query<RefRO<Projectile>, RefRO<ProjectileHitEvent>, RefRO<LavaImpact>, RefRO<ProjectileModifierSnapshot>>().WithEntityAccess())
             {
-                targets.Clear();
                 float effectiveSize = lavaImpact.ValueRO.ExplosionRadius * snapshot.ValueRO.SizeMultiplier;
-                SpatialQuery.CollectInRadius(grid, hit.ValueRO.Position, effectiveSize, ref targets);
+                SpatialQuery.CollectInRadius(grid, hit.ValueRO.Position, effectiveSize, targets);
 
                 foreach (var target in targets)
                 {

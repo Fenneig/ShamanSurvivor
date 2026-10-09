@@ -89,7 +89,7 @@ namespace ShamanSurvivor.Runtime
         }
 
         public static void CollectInRadius(NativeParallelMultiHashMap<int2, EnemySpatialEntry>.ReadOnly grid,
-            float2 origin, float radius, ref NativeList<EnemySpatialEntry> results)
+            float2 origin, float radius, NativeList<EnemySpatialEntry> results)
         {
             results.Clear();
 
