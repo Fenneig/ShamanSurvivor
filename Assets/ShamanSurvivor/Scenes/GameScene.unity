@@ -878,6 +878,7 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -972,7 +973,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1003,6 +1004,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cec8207a84da4995b627464971f57f27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ShamanSurvivor.Presentation::ShamanSurvivor.Presentation.PlayerCameraFollow
+  _offset: {x: 0, y: 0}
+  _smoothFollow: 0
+  _followSpeed: 10
 --- !u!1001 &552730255
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1148,6 +1164,7 @@ Transform:
   - {fileID: 1170509015}
   - {fileID: 1934465614}
   - {fileID: 261943337}
+  - {fileID: 1329809669}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &775090784
@@ -1708,6 +1725,63 @@ MonoBehaviour:
   m_EditorClassIdentifier: ShamanSurvivor.Presentation::ShamanSurvivor.Presentation.ChainLightningEffectPool
   _prefab: {fileID: 3962131517932150062, guid: 3c31fe44b1d9d6a44833e82e484556f9, type: 3}
   _prewarmCount: 16
+--- !u!1 &1329809668
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1329809669}
+  - component: {fileID: 1329809670}
+  m_Layer: 0
+  m_Name: EarthWavePresenter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1329809669
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1329809668}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 757516665}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1329809670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1329809668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddeac52bd10e481596deee66866843d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ShamanSurvivor.Presentation::ShamanSurvivor.Presentation.EarthWavePresenter
+  _segmentPrefab: {fileID: 6859260164956423314, guid: 35334aa90f66c4c48940ae9e635149b1, type: 3}
+  _prewarmCount: 96
+  _rowSpacing: 0.65
+  _sideSegmentSpacing: 1
+  _maxSidePairs: 3
+  _maxRowsPerFrame: 12
+  _segmentLifetime: 0.35
+  _mainScale: 1
+  _sideScale: 0.75
+  _zPosition: -0.15
+  _forwardOffsetPer100Percent: 0.4
+  _debugPrefab: {fileID: 1216433557676492184, guid: 453dce31c45cf0d4999472b1056dc5d2, type: 3}
+  _debugZPosition: 0.05
 --- !u!1 &1352950346
 GameObject:
   m_ObjectHideFlags: 0

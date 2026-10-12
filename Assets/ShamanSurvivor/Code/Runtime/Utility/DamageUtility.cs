@@ -35,5 +35,16 @@ namespace ShamanSurvivor.Runtime
 
             return true;
         }
+        
+        public static bool WasAlreadyHit(DynamicBuffer<ProjectileHitHistory> history, Entity target)
+        {
+            for (int i = 0; i < history.Length; i++)
+            {
+                if (history[i].Entity == target)
+                    return true;
+            }
+
+            return false;
+        }
     }
 }

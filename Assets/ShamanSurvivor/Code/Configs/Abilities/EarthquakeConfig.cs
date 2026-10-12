@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using ShamanSurvivor.Runtime;
+using UnityEngine;
 
 namespace ShamanSurvivor.Configs
 {
@@ -12,7 +13,7 @@ namespace ShamanSurvivor.Configs
         public float Duration = 4f;
         [Min(0.05f)]
         public float TickInterval = 0.5f;
-        [Range(0f, 1f)]
+        [Range(0f, SlowUtility.UPPER_BOUND)]
         public float SlowAmount = 0.3f;
     }
 }

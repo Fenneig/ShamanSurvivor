@@ -5,9 +5,11 @@ namespace ShamanSurvivor.Runtime
 {
     public static class SlowUtility
     {
+        public const float UPPER_BOUND = 0.95f;
+        
         public static void ApplyOrRefresh(DynamicBuffer<Slow> effects, Entity source, float amount, float duration)
         {
-            amount = math.clamp(amount, 0f, 1f);
+            amount = math.clamp(amount, 0f, UPPER_BOUND);
 
             duration = math.max(0f, duration);
             

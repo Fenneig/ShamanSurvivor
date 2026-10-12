@@ -88,7 +88,7 @@ namespace ShamanSurvivor.Runtime
             float effectiveDamage = definition.Damage * (1 + damageBonus);
             float effectiveSize = earthquake.Radius * (1 + sizeBonus);
             float effectiveDuration = earthquake.Duration * (1 + durationBonus);
-            float effectiveSlow = math.clamp(earthquake.SlowAmount * (1 + effectBonus), 0, 1f);
+            float effectiveSlow = math.clamp(earthquake.SlowAmount * (1 + effectBonus), 0, SlowUtility.UPPER_BOUND);
             
             float cooldown = definition.AttackInterval / (1 + frequencyBonus);
             

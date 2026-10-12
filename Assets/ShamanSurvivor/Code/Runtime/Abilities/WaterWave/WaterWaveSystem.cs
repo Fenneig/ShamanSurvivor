@@ -66,16 +66,13 @@ namespace ShamanSurvivor.Runtime
                 {
                     EnemySpatialEntry target = targets[i];
 
-                    if (WasAlreadyHit(history, target.Entity))
+                    if (DamageUtility.WasAlreadyHit(history, target.Entity))
                         continue;
 
                     if (!SystemAPI.HasBuffer<DamageEvent>(target.Entity))
                         continue;
 
-                    history.Add(new ProjectileHitHistory
-                    {
-                        Entity = target.Entity
-                    });
+                    history.Add(new ProjectileHitHistory { Entity = target.Entity });
 
                     float damage = projectile.ValueRO.Damage * snapshot.ValueRO.DamageMultiplier;
 
@@ -104,17 +101,6 @@ namespace ShamanSurvivor.Runtime
                 position.xy = end;
                 transform.ValueRW.Position = position;
             }
-        }
-
-        private static bool WasAlreadyHit(DynamicBuffer<ProjectileHitHistory> history, Entity target)
-        {
-            for (int i = 0; i < history.Length; i++)
-            {
-                if (history[i].Entity == target)
-                    return true;
-            }
-
-            return false;
         }
     }
 }
