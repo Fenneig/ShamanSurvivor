@@ -50,7 +50,6 @@ namespace ShamanSurvivor.Runtime
                 }
                 
                 SpatialQuery.CollectInRadius(grid, zone.ValueRO.Position, zone.ValueRO.Radius, targets);
-                Debug.Log($"earthquake collect {targets.Length} targets");
                 float tickInterval = math.max(0.01f, zone.ValueRO.TickInterval);
 
                 float tickTimer = zone.ValueRO.TickTimer - deltaTime;
@@ -65,8 +64,6 @@ namespace ShamanSurvivor.Runtime
                 }
 
                 zone.ValueRW.TickTimer = tickTimer;
-                Debug.Log($"earthquake try damage {damageTicks} times");
-                
 
                 for (int i = 0; i < targets.Length; i++)
                 {

@@ -17,7 +17,7 @@ MonoBehaviour:
   DamageElement: 3
   Range: 8
   AttackInterval: 1
-  CanUnlock: 1
+  CanUnlock: 0
   ProjectilePrefab: {fileID: 2929988893149068468, guid: a657c8aef5ffcf6478696effc1d89d6b, type: 3}
   ProjectileSpeed: 5
   ProjectileLifetime: 5

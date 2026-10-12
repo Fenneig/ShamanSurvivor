@@ -16,9 +16,9 @@ MonoBehaviour:
   Damage: 5
   DamageElement: 4
   Range: 8
-  AttackInterval: 1
+  AttackInterval: 3
   CanUnlock: 1
-  Radius: 3
+  Radius: 1.5
   Duration: 4
   TickInterval: 0.5
   SlowAmount: 0.3
