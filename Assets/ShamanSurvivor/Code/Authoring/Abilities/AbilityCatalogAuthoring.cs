@@ -67,6 +67,16 @@ namespace ShamanSurvivor.Authoring
                             SlowAmount = earthquake.SlowAmount
                         });
                     }
+                    
+                    if (ability is LightningShieldConfig shield)
+                    {
+                        AddComponent(entity, new LightningShieldDefinition
+                        {
+                            OrbitRadius = shield.OrbitRadius,
+                            OrbHitRadius = shield.OrbHitRadius,
+                            BaseOrbCount = shield.BaseOrbCount
+                        });
+                    }
                 }
             }
         }

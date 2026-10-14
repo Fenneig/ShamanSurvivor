@@ -160,7 +160,7 @@ namespace ShamanSurvivor.Presentation
             return 1f;
         }
 
-        private static float GetCooldownPhase(AbilityState ability)
+        private float GetCooldownPhase(AbilityState ability)
         {
             if (ability.CooldownDuration <= 0f)
                 return 0f;

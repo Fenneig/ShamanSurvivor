@@ -333,6 +333,9 @@ MonoBehaviour:
   _maxRippleOpacity: 0.8
   _fadeInPortion: 0.12
   _fadeOutStart: 0.55
+  _surfaceRotationSpeed: 5
+  _ripple1RotationSpeed: -15
+  _ripple2RotationSpeed: 12
   _debugHitbox: {fileID: 3999212371249189817}
 --- !u!1 &4609166414440902787
 GameObject:
