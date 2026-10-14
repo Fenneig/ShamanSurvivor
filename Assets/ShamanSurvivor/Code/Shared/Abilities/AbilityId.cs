@@ -8,7 +8,7 @@
         ChainLightning = 3,
         Earthquake = 4,
         EarthWave = 5,
-        WaterWhip = 6,
+        TidalAura = 6,
         LightningShield = 7
     }
 }

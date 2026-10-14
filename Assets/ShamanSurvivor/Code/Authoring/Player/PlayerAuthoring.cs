@@ -32,7 +32,7 @@ namespace ShamanSurvivor.Authoring
                 });
                 AddBuffer<UpgradeProgress>(entity);
                 DynamicBuffer<AbilityState> abilities = AddBuffer<AbilityState>(entity);
-                abilities.Add(new AbilityState { Ability = AbilityId.EarthWave, CooldownRemaining = 0, CooldownDuration = 0});
+                abilities.Add(new AbilityState { Ability = AbilityId.TidalAura, CooldownRemaining = 0, CooldownDuration = 0});
                 AddBuffer<PassiveProgress>(entity);
             }
         }
