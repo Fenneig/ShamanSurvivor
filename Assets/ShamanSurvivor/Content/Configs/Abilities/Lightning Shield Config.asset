@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Lightning Shield Config
   m_EditorClassIdentifier: ShamanSurvivor.Configs::ShamanSurvivor.Configs.LightningShieldConfig
   Ability: 7
-  Damage: 2
+  Damage: 5
   DamageElement: 1
   Range: 2
   AttackInterval: 1
-  CanUnlock: 1
+  CanUnlock: 0
   OrbitRadius: 2
   BaseOrbCount: 1
   OrbHitRadius: 0.4

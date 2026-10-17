@@ -81,7 +81,6 @@ namespace ShamanSurvivor.Runtime
             float quantityBonus = UpgradeProgressUtility.GetBonus(upgrades, AbilityId.LightningShield, UpgradeKey.Quantity);
             float sizeBonus = UpgradeProgressUtility.GetBonus(upgrades, AbilityId.LightningShield, UpgradeKey.Size);
             int count = math.max(1, shield.BaseOrbCount + (int)math.round(quantityBonus));
-            Debug.Log($"orbs count = {count}");
             float sizeMultiplier = 1f + sizeBonus;
             float orbitRadius = shield.OrbitRadius * sizeMultiplier;
             float hitRadius = shield.OrbHitRadius * sizeMultiplier;

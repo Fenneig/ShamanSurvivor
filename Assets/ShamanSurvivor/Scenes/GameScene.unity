@@ -2947,12 +2947,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: ShamanSurvivor.Presentation::ShamanSurvivor.Presentation.LightningShieldDebugPresenter
   _orbPrefab: {fileID: 4773864231761923882, guid: 1726242542002ba42aa468e62818121e, type: 3}
-  _orbitCircle: {fileID: 737258970}
-  _orbitSegments: 96
-  _showHitboxes: 1
-  _showOrbit: 1
+  _prewarmCount: 6
   _zPosition: -0.15
-  _prewarmCount: 8
+  _diameterMultiplierFromHitRadius: 2
 --- !u!1 &1849823611
 GameObject:
   m_ObjectHideFlags: 0
