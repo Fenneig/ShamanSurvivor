@@ -17,4 +17,4 @@ MonoBehaviour:
   DamageElement: 3
   Range: 4
   AttackInterval: 1
-  CanUnlock: 0
+  CanUnlock: 1

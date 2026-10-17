@@ -141,6 +141,7 @@ namespace ShamanSurvivor.Runtime
                 switch (candidate.Type)
                 {
                     case LevelUpOptionType.AbilityUpgrade:
+                        
                         UpgradeDefinition abilityDefinition = definitions[candidate.DefinitionIndex];
                         int abilityPicks = GetPicks(progresses, abilityDefinition.Ability, abilityDefinition.Key);
                         options.Add(new LevelUpOption
@@ -193,6 +194,9 @@ namespace ShamanSurvivor.Runtime
             for (int i = 0; i < abilities.Length; i++)
             {
                 AbilityDefinition definition = abilities[i];
+                        
+                if (!AbilityLimitUtility.CanOfferAbility(unlockedAbilities, definition.Ability))
+                    continue;
                 
                 if (!definition.CanUnlock)
                     continue;

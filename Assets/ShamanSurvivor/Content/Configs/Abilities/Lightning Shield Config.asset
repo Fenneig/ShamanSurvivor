@@ -17,7 +17,7 @@ MonoBehaviour:
   DamageElement: 1
   Range: 2
   AttackInterval: 1
-  CanUnlock: 0
+  CanUnlock: 1
   OrbitRadius: 2
   BaseOrbCount: 1
   OrbHitRadius: 0.4
